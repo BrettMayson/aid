@@ -1,0 +1,10 @@
+name = "Advanced Interactive Devices"
+prefix = "aid"
+mainprefix = "z"
+
+[hemtt.launch]
+workshop = [
+    "450814997", # CBA
+    "751965892", # ACRE2
+    "463939057", # ACE3
+]
