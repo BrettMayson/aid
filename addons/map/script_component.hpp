@@ -12,3 +12,7 @@
 #endif
 
 #include "..\main\script_macros.hpp"
+
+#define ID_EG_MAP_CONTROL 63909
+#define ID_EG_MAP_CONTROLGROUP 62609
+#define ID_DIARY_MAP 51

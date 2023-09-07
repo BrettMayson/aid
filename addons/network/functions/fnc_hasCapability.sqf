@@ -25,4 +25,7 @@ switch (_capability) do {
             _gpsitems findIf {_x in _items} != -1
         }
     };
+    case "team": {
+        _object isKindOf "Man"
+    };
 }
