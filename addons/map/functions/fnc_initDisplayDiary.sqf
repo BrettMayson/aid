@@ -26,5 +26,4 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
         } forEach _y;
     } forEach GVAR(sources);
     if (count _close == 0) exitWith {};
-    systemChat format ["Peer: %1", _close];
 }];
