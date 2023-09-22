@@ -41,7 +41,7 @@ FUNC(createMarker) = {
         "ColorGrey"
     };
     [_radio, _object] call FUNC(saveData);
-    private _color = [_object] call FUNC(color);
+    private _data = [_radio, _object] call FUNC(loadData);
     private _markers = GVAR(sources) getOrDefaultCall [_radio, {
         [[_radio] call FUNC(createMarker)]
     }];
@@ -54,9 +54,7 @@ FUNC(createMarker) = {
             _outer setMarkerAlphaLocal 1;
         };
         _inner setMarkerColorLocal _status;
-        if (_color != "") then {
-            _outer setMarkerColorLocal _color;
-        };
+        _outer setMarkerColorLocal (_data getOrDefault ["color", "ColorBlack"]);
     } forEach _markers;
 }] call CBA_fnc_addEventHandler;
 

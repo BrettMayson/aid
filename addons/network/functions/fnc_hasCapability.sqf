@@ -17,8 +17,8 @@ switch (_capability) do {
             }
         } else {
             private _items = [];
-            private _containers = [_checking];
-            _containers append ((everyContainer _checking) apply {_x select 1});
+            private _containers = [_object];
+            _containers append ((everyContainer _object) apply {_x select 1});
             {
                 _items = (getItemCargo _x) select 0;
             } forEach _containers;
