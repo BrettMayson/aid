@@ -80,12 +80,18 @@ createMarkerLocal ["aid_player_inner", getPos player];
 "aid_player_inner" setMarkerColorLocal "ColorYellow";
 "aid_player_inner" setMarkerShadowLocal false;
 [{
-    private _color = [player] call FUNC(color);
+    if !([player, "gps"] call EFUNC(network,hasCapability)) exitWith {
+        "aid_player_inner" setMarkerAlphaLocal 0;
+        "aid_player_outer" setMarkerAlphaLocal 0;
+    }
+    "aid_player_inner" setMarkerAlphaLocal 1;
+    "aid_player_outer" setMarkerAlphaLocal 1;
+    private _color = [ace_player] call FUNC(color);
     if (_color != "") then {
         "aid_player_outer" setMarkerColorLocal _color;
     };
-    "aid_player_inner" setMarkerPosLocal (getPos player);
-    "aid_player_outer" setMarkerPosLocal (getPos player);
+    "aid_player_inner" setMarkerPosLocal (getPos ace_player);
+    "aid_player_outer" setMarkerPosLocal (getPos ace_player);
 }] call CBA_fnc_addPerFrameHandler;
 
 ["visibleMap", {
