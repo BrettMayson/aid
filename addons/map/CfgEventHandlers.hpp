@@ -16,6 +16,6 @@ class Extended_PostInit_EventHandlers {
 };
 class Extended_DisplayLoad_EventHandlers {
     class RscDiary {
-        ADDON = QUOTE(((_this select 0) displayCtrl ID_DIARY_MAP) call (uiNamespace getVariable 'DFUNC(initDisplayDiary)'););
+        ADDON = QUOTE(([ARR_2((_this select 0),(_this select 0) displayCtrl ID_DIARY_MAP)]) call (uiNamespace getVariable 'DFUNC(initDisplayDiary)'););
     };
 };

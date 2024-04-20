@@ -2,7 +2,7 @@ name = "Advanced Interactive Devices"
 prefix = "aid"
 mainprefix = "z"
 
-[hemtt.launch]
+[hemtt.launch.default]
 workshop = [
     "450814997", # CBA
     "751965892", # ACRE2
@@ -10,3 +10,4 @@ workshop = [
     "1779063631", # Zeus Enhanced
     "2018593688", # Zeus Enhanced ACE3 Compatibility
 ]
+mission = "2_riflemen.Stratis"

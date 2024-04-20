@@ -35,11 +35,7 @@ FUNC(createMarker) = {
 [QEGVAR(network,peerInRange), {
     params ["_radio", "_object"];
     private _gps = [_object, "gps"] call EFUNC(network,hasCapability);
-    private _status = if (_gps) then {
-        "ColorWhite"
-    } else {
-        "ColorGrey"
-    };
+    private _status = ["ColorGrey", "ColorWhite"] select _gps;
     [_radio, _object] call FUNC(saveData);
     private _data = [_radio, _object] call FUNC(loadData);
     private _markers = GVAR(sources) getOrDefaultCall [_radio, {
@@ -54,7 +50,7 @@ FUNC(createMarker) = {
             _outer setMarkerAlphaLocal 1;
         };
         _inner setMarkerColorLocal _status;
-        _outer setMarkerColorLocal (_data getOrDefault ["color", "ColorBlack"]);
+        _outer setMarkerColorLocal (_data getOrDefault ["color", "ColorGrey"]);
     } forEach _markers;
 }] call CBA_fnc_addEventHandler;
 
@@ -80,10 +76,10 @@ createMarkerLocal ["aid_player_inner", getPos player];
 "aid_player_inner" setMarkerColorLocal "ColorYellow";
 "aid_player_inner" setMarkerShadowLocal false;
 [{
-    if !([player, "gps"] call EFUNC(network,hasCapability)) exitWith {
+    if !([ace_player, "gps"] call EFUNC(network,hasCapability)) exitWith {
         "aid_player_inner" setMarkerAlphaLocal 0;
         "aid_player_outer" setMarkerAlphaLocal 0;
-    }
+    };
     "aid_player_inner" setMarkerAlphaLocal 1;
     "aid_player_outer" setMarkerAlphaLocal 1;
     private _color = [ace_player] call FUNC(color);
@@ -92,9 +88,29 @@ createMarkerLocal ["aid_player_inner", getPos player];
     };
     "aid_player_inner" setMarkerPosLocal (getPos ace_player);
     "aid_player_outer" setMarkerPosLocal (getPos ace_player);
-}] call CBA_fnc_addPerFrameHandler;
+}, 0.1] call CBA_fnc_addPerFrameHandler;
 
 ["visibleMap", {
     GVAR(cursorMoved) = diag_tickTime;
     GVAR(cursorChecked) = false;
 }, true] call CBA_fnc_addPlayerEventHandler;
+
+[{
+    private _previousColor = ace_player getVariable [QGVAR(color), ""];
+    private _currentColor = [ace_player, false] call FUNC(color);
+    if (_previousColor != _currentColor) then {
+        ace_player setVariable [QGVAR(color), _currentColor, true];
+    };
+
+    // update color of AI in group if player is leader
+    if (leader group ace_player == ace_player) then {
+        {
+            if (isPlayer _x) then { continue };
+            private _previousColor = _x getVariable [QGVAR(color), ""];
+            private _currentColor = [_x, false] call FUNC(color);
+            if (_previousColor != _currentColor) then {
+                _x setVariable [QGVAR(color), _currentColor, true];
+            };
+        } forEach units group player;
+    };
+}, 1] call CBA_fnc_addPerFrameHandler;

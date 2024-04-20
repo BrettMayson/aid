@@ -1,30 +1,56 @@
 #include "script_component.hpp"
 
-params ["_mapCtrl"];
+params ["_display", "_mapCtrl"];
+
+private _peerCtrl = _display displayCtrl IDC_PEER;
+GVAR(cursorOverInfo) = false;
+GVAR(cursorOverInfoMarker) = "";
+GVAR(peerShown) = [];
+
+(_peerCtrl controlsGroupCtrl IDC_PEER_INFO) ctrlAddEventHandler ["MouseEnter", {
+    GVAR(cursorOverInfo) = true;
+}];
+
+(_peerCtrl controlsGroupCtrl IDC_PEER_INFO) ctrlAddEventHandler ["MouseExit", {
+    GVAR(cursorOverInfo) = false;
+}];
 
 _mapCtrl ctrlAddEventHandler ["MouseMoving", {
-    params ["_control", "_posX", "_posY"];
-    GVAR(cursorPosition) = [_posX, _posY];
-    GVAR(cursorPositionWorld) = _control ctrlMapScreenToWorld [_posX, _posY];
     GVAR(cursorMoved) = diag_tickTime;
     GVAR(cursorChecked) = false;
 }];
 
 _mapCtrl ctrlAddEventHandler ["Draw", {
     params ["_control"];
-    if (GVAR(cursorChecked) || {diag_tickTime - GVAR(cursorMoved) < 0.3}) exitWith {};
+    if (GVAR(cursorOverInfo)) exitWith {
+        private _peerCtrl = (findDisplay 12) displayCtrl IDC_PEER;
+        [_control, _peerCtrl, GVAR(peerShown)#0, GVAR(peerShown)#1] call FUNC(peerUpdate);
+    };
+    if (GVAR(cursorChecked) || {diag_tickTime - GVAR(cursorMoved) < 0.1}) exitWith {
+        if (GVAR(peerShown) isEqualTo []) exitWith {};
+        private _peerCtrl = (findDisplay 12) displayCtrl IDC_PEER;
+        [_control, _peerCtrl, GVAR(peerShown)#0, GVAR(peerShown)#1] call FUNC(peerUpdate);
+    };
     GVAR(cursorChecked) = true;
     private _close = [];
     {
         private _radio = _x;
         {
-            _x params ["_inner"];
-            private _dist = (_control ctrlMapWorldToScreen (getMarkerPos _inner)) distance2d GVAR(cursorPosition);
+            _x params ["_inner", "_outer"];
+            private _dist = (_control ctrlMapWorldToScreen (getMarkerPos _inner)) distance2d getMousePosition;
             if (_dist <= 0.01) then {
-                _close pushBackUnique _radio;
+                _close pushBackUnique [_radio, _inner, _outer];
             };
         } forEach _y;
     } forEach GVAR(sources);
-    if (count _close == 0) exitWith {};
-    systemChat format ["%1", _close];
+    private _peerCtrl = (findDisplay 12) displayCtrl IDC_PEER;
+    if (count _close == 0) exitWith {
+        GVAR(peerShown) = [];
+        GVAR(cursorOverInfoMarker) = "";
+        GVAR(cursorOverInfo) = false;
+        _peerCtrl ctrlShow false;
+    };
+    (_close select 0) params ["_radio", "_inner", "_outer"];
+    GVAR(peerShown) = [_radio, _inner, _outer];
+    [_control, _peerCtrl, _radio, _inner] call FUNC(peerUpdate);
 }];

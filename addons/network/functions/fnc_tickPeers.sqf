@@ -6,13 +6,15 @@ _check append GVAR(peers);
 _check arrayIntersect _check;
 
 {
-    private _args = [_x, objectFromNetId (GVAR(peerObjects) get _x)];
-    if !(_x in GVAR(peers)) then {
-        GVAR(peers) pushBackUnique _x;
-        [QGVAR(peerDiscovered), _args] call CBA_fnc_localEvent;
-        [QGVAR(peerInRange), _args] call CBA_fnc_localEvent;
-    } else {
-        [QGVAR(peerInRange), _args] call CBA_fnc_localEvent;
+    private _args = [_x, objectFromNetId (GVAR(peerObjects) getOrDefault [_x, ""])];
+    if !(isNull (_args select 1)) then {
+        if !(_x in GVAR(peers)) then {
+            GVAR(peers) pushBackUnique _x;
+            [QGVAR(peerDiscovered), _args] call CBA_fnc_localEvent;
+            [QGVAR(peerInRange), _args] call CBA_fnc_localEvent;
+        } else {
+            [QGVAR(peerInRange), _args] call CBA_fnc_localEvent;
+        };
     };
     if !(_x in _keys) then {
         GVAR(peers) deleteAt (GVAR(peers) find _x);
