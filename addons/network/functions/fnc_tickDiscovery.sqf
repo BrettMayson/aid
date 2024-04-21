@@ -9,7 +9,7 @@ if (count GVAR(searchObjects) == 0) then {
     GVAR(searchObjects) append vehicles;
     GVAR(searchObjects) append ("GroundWeaponHolder" allObjects 0); 
     GVAR(searchObjects) append ("WeaponHolderSimulated" allObjects 1);
-    GVAR(searchObjects) arrayIntersect GVAR(searchObjects);
+    GVAR(searchObjects) = GVAR(searchObjects) arrayIntersect GVAR(searchObjects);
 };
 
 private _checking = GVAR(searchObjects) deleteAt 0;
@@ -36,7 +36,7 @@ if (_checking isKindOf "Man") then {
 };
 
 {
-    if ([_x] call FUNC(getStrength) > 0) exitWith {
+    if ([_x] call FUNC(getStrength) > 0) then {
         GVAR(scanningObjects) set [toLower _x, netId _checking];
     };
 } forEach _radios;

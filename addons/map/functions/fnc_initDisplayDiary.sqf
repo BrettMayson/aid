@@ -1,4 +1,4 @@
-#include "script_component.hpp"
+#include "..\script_component.hpp"
 
 params ["_display", "_mapCtrl"];
 
@@ -34,12 +34,12 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
     GVAR(cursorChecked) = true;
     private _close = [];
     {
-        private _radio = _x;
+        private _object = _x;
         {
             _x params ["_inner", "_outer"];
             private _dist = (_control ctrlMapWorldToScreen (getMarkerPos _inner)) distance2d getMousePosition;
             if (_dist <= 0.01) then {
-                _close pushBackUnique [_radio, _inner, _outer];
+                _close pushBackUnique [_object, _inner, _outer];
             };
         } forEach _y;
     } forEach GVAR(sources);
@@ -50,7 +50,7 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
         GVAR(cursorOverInfo) = false;
         _peerCtrl ctrlShow false;
     };
-    (_close select 0) params ["_radio", "_inner", "_outer"];
-    GVAR(peerShown) = [_radio, _inner, _outer];
-    [_control, _peerCtrl, _radio, _inner] call FUNC(peerUpdate);
+    (_close select 0) params ["_object", "_inner", "_outer"];
+    GVAR(peerShown) = [_object, _inner, _outer];
+    [_control, _peerCtrl, _object, _inner] call FUNC(peerUpdate);
 }];

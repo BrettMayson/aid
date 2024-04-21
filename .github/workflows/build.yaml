@@ -1,0 +1,25 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup HEMTT
+        uses: arma-actions/hemtt@v1
+
+      - name: Build Mod
+        run: hemtt release
+
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: aid.zip
+          path: releases/aid-latest.zip

@@ -3,7 +3,7 @@
 private _keys = keys GVAR(peerObjects);
 private _check = +_keys;
 _check append GVAR(peers);
-_check arrayIntersect _check;
+_check = _check arrayIntersect _check;
 
 {
     private _args = [_x, objectFromNetId (GVAR(peerObjects) getOrDefault [_x, ""])];
