@@ -17,7 +17,7 @@ _data set ["radios", _radiosData];
 
 if (_object isKindOf "Man") then {
     _data set ["name", name _object];
-    if (alive _object && {[_object, "team"] call EFUNC(network,hasCapability)}) then {
+    if ([_object, "team"] call EFUNC(network,hasCapability)) then {
         private _color = [_object] call FUNC(color);
         if (_color != "") then {
             _data set ["color", _color];
@@ -31,6 +31,8 @@ _data set ["lastSeen", daytime];
 _data set ["speed", vectorMagnitude velocity _object];
 _data set ["bearing", getDir _object];
 _data set ["altitude", getPosASL _object select 2];
+
+_data set ["trail", [_object] call FUNC(trail)];
 
 GVAR(contactData) set [netId _object, _data];
 

@@ -72,3 +72,7 @@ _infoCtrl ctrlCommit 0;
 
 _peerCtrl ctrlCommit 0;
 _peerCtrl ctrlShow true;
+
+if ("trail" in _peerData) then {
+    [_object, _peerData get "trail"] call FUNC(drawTrail);
+};

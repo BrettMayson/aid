@@ -20,4 +20,6 @@ GVAR(peerDeleted) = false;
     _peerCtrl ctrlShow false;
 }, [DIK_DELETE, [false, false, false]]] call CBA_fnc_addKeybind;
 
+GVAR(trailMarkers) = [];
+
 ADDON = true;

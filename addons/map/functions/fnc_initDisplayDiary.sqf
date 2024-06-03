@@ -49,6 +49,9 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
         GVAR(cursorOverInfoMarker) = "";
         GVAR(cursorOverInfo) = false;
         _peerCtrl ctrlShow false;
+        {
+            deleteMarkerLocal _x;
+        } forEach GVAR(trailMarkers);
     };
     (_close select 0) params ["_object", "_inner", "_outer"];
     GVAR(peerShown) = [_object, _inner, _outer];
