@@ -16,7 +16,13 @@ private _radiosData = createHashMap;
 _data set ["radios", _radiosData];
 
 if (_object isKindOf "Man") then {
-    _data set ["name", name _object];
+    private _name = name _object;
+    if (_name != "") then {
+        _object setVariable [QGVAR(name), _name, true];
+    } else {
+        _name = _object getVariable [QGVAR(name), ""];
+    };
+    _data set ["name", _name];
     if ([_object, "team"] call EFUNC(network,hasCapability)) then {
         private _color = [_object] call FUNC(color);
         if (_color != "") then {

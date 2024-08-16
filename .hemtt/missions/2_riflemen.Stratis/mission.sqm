@@ -15,7 +15,7 @@ class EditorData
 		pos[]={4092.8523,128.01457,6326.959};
 		dir[]={-0.73636431,-0.32517114,0.59333307};
 		up[]={-0.25320303,0.94565421,0.20402104};
-		aside[]={0.62742984,9.95351e-009,0.77868032};
+		aside[]={0.62742984,9.95351e-09,0.77868032};
 	};
 };
 binarizationWanted=0;
@@ -449,14 +449,14 @@ class Mission
 					};
 					id=3;
 					type="B_Soldier_F";
-					atlOffset=7.6293945e-006;
+					atlOffset=7.6293945e-06;
 				};
 			};
 			class Attributes
 			{
 			};
 			id=2;
-			atlOffset=7.6293945e-006;
+			atlOffset=7.6293945e-06;
 		};
 		class Item2
 		{
@@ -473,7 +473,7 @@ class Mission
 			};
 			id=4;
 			type="ACRE_RadioSupplyCrate";
-			atlOffset=-5.3405762e-005;
+			atlOffset=-5.3405762e-05;
 		};
 	};
 };
