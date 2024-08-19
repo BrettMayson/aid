@@ -29,7 +29,9 @@ while {true} do {
         _pos = _pos vectorAdd (vectorNormalized (getPosASL _uav vectorFromTo getPosASL ace_player) vectorMultiply 15);
     } else {
         _disruptStrength = _disruptStrength + 0.05;
+        _pos = _pos vectorAdd (vectorNormalized (getPosASL _uav vectorFromTo getPosASL ace_player) vectorMultiply 5);
     };
+    if (_pos distance eyePos ace_player < 20) then {break};
     _rayStart = _pos;
     _rayIgnore = _obj;
 };
