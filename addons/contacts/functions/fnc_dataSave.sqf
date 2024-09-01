@@ -17,7 +17,7 @@ _data set ["radios", _radiosData];
 
 if (_object isKindOf "Man") then {
     private _name = name _object;
-    if (_name != "") then {
+    if (_name != "" && {(_object getVariable [QGVAR(name), ""]) == ""}) then {
         _object setVariable [QGVAR(name), _name, true];
     } else {
         _name = _object getVariable [QGVAR(name), ""];

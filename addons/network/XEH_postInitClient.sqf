@@ -11,3 +11,25 @@ if !(isMultiplayer) exitWith {};
 [{
     call FUNC(tickPeers);
 }, 0.25] call CBA_fnc_addPerFrameHandler;
+
+[QGVAR(syncCount), {
+    params ["_count"];
+    if (count GVAR(allRadios) == _count) exitWith {};
+
+    [QGVAR(getRadios), player] call CBA_fnc_serverEvent;
+}] call CBA_fnc_addEventHandler;
+
+[QGVAR(syncRadios), {
+    params ["_radios"];
+    GVAR(allRadios) = _radios;
+}] call CBA_fnc_addEventHandler;
+
+[QGVAR(addRadio), {
+    params ["_radio"];
+    GVAR(allRadios) pushBackUnique _radio;
+}] call CBA_fnc_addEventHandler;
+
+[QGVAR(removeRadio), {
+    params ["_radio"];
+    GVAR(allRadios) = GVAR(allRadios) - [_radio];
+}] call CBA_fnc_addEventHandler;
