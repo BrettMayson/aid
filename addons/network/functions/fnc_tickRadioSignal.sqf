@@ -6,7 +6,15 @@ if (count GVAR(radios) == 0) exitWith {
     GVAR(playerRadios) = createHashmap;
 };
 
-private _myRadios = [] call acre_api_fnc_getCurrentRadioList;
+if (isNil QGVAR(currentRadioCache)) then {
+    GVAR(currentRadioCache) = [];
+    GVAR(currentRadioCacheExpiry) = -2;
+};
+if (CBA_missionTime > GVAR(currentRadioCacheExpiry)) then {
+    GVAR(currentRadioCache) = [] call acre_api_fnc_getCurrentRadioList;
+    GVAR(currentRadioCacheExpiry) = CBA_missionTime + 1;
+};
+private _myRadios = +GVAR(currentRadioCache);
 
 private _txRadio = GVAR(radios) deleteAt 0;
 private _txData = [_txRadio, "getCurrentChannelData"] call acre_sys_data_fnc_dataEvent;
