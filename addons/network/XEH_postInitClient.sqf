@@ -20,8 +20,7 @@ if !(isMultiplayer) exitWith {};
 }] call CBA_fnc_addEventHandler;
 
 [QGVAR(syncRadios), {
-    params ["_radios"];
-    GVAR(allRadios) = _radios;
+    GVAR(allRadios) = _this;
 }] call CBA_fnc_addEventHandler;
 
 [QGVAR(addRadio), {
