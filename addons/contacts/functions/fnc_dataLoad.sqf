@@ -6,4 +6,4 @@ if (typeName _object == "OBJECT") then {
     _object = netId _object;
 };
 
-GVAR(contactData) getOrDefaultCall [_object, { createHashmap }]
+GVAR(contactData) getOrDefaultCall [_object, { createHashMap }]

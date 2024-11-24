@@ -6,7 +6,7 @@ private _uav = GVAR(uav);
 
 if (isNull _uav) exitWith {
     [_handle] call CBA_fnc_removePerFrameHandler;
-    GVAR(uavFilmGrain) ppEffectEnable false;
+    GVAR(ppResolution) ppEffectEnable false;
 };
 
 // TODO define communication type, radio vs satcom
@@ -36,14 +36,21 @@ while {true} do {
     _rayIgnore = _obj;
 };
 
-private _distanceLOS = linearConversion [8, 6000, _distance, 0, 1, true];
+private _distanceLOS = linearConversion [8, 12000, _distance, 0, 0.75, true];
 
 _disruptStrength = _disruptStrength + _distanceLOS;
 
 if (_distance > 8) then {
-    GVAR(uavFilmGrain) ppEffectAdjust [1.5 min _disruptStrength, 0.1 max (1 - _disruptStrength), 1.25, 0.75, 0.75];
-    GVAR(uavFilmGrain) ppEffectCommit 0.25;
-    GVAR(uavFilmGrain) ppEffectEnable true;
+    // old film grain
+    // GVAR(ppResolution) ppEffectAdjust [1.5 min _disruptStrength, 0.1 max (1 - _disruptStrength), 1.25, 0.75, 0.75];
+    GVAR(ppResolution) ppEffectAdjust [GVAR(maxRes) / (1 + _disruptStrength * 6)];
+    GVAR(ppResolution) ppEffectCommit 0.25;
+    GVAR(ppResolution) ppEffectEnable true;
+    equipmentDisabled _uav params ["", "_ti"];
+    private _desired = _disruptStrength > 0.15;
+    if (_desired != _ti) then {
+        _uav disableTIEquipment _desired;
+    };
 } else {
-    GVAR(uavFilmGrain) ppEffectEnable false;
+    GVAR(ppResolution) ppEffectEnable false;
 };

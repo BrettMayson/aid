@@ -3,7 +3,7 @@
 if (count GVAR(radios) == 0) exitWith {
     GVAR(radios) = (+GVAR(allRadios)) - ([] call acre_api_fnc_getCurrentRadioList);
     GVAR(peerRadios) = GVAR(playerRadios);
-    GVAR(playerRadios) = createHashmap;
+    GVAR(playerRadios) = createHashMap;
 };
 
 if (isNil QGVAR(currentRadioCache)) then {
@@ -37,7 +37,7 @@ private _txPower = _txData getVariable "power";
             _txSignal = ([_txFreq, _txPower, _txRadio, _x] call acre_sys_signal_fnc_getSignal) select 0;
         };
     };
-    private _hash = GVAR(playerRadios) getOrDefaultCall [tolower _x, { createHashmap }, true];
+    private _hash = GVAR(playerRadios) getOrDefaultCall [toLower _x, { createHashMap }, true];
     _hash set [_txRadio, [_txSignal, _rxSignal]];
-    GVAR(playerRadios) set [tolower _x, _hash];
+    GVAR(playerRadios) set [toLower _x, _hash];
 } forEach _myRadios;

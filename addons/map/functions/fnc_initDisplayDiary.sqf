@@ -37,7 +37,7 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
         private _object = _x;
         {
             _x params ["_inner", "_outer"];
-            private _dist = (_control ctrlMapWorldToScreen (getMarkerPos _inner)) distance2d getMousePosition;
+            private _dist = (_control ctrlMapWorldToScreen (getMarkerPos _inner)) distance2D getMousePosition;
             if (_dist <= 0.01) then {
                 _close pushBackUnique [_object, _inner, _outer];
             };

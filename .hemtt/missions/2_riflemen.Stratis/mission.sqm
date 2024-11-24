@@ -12,10 +12,10 @@ class EditorData
 	};
 	class Camera
 	{
-		pos[]={4092.8523,128.01457,6326.959};
-		dir[]={-0.73636431,-0.32517114,0.59333307};
-		up[]={-0.25320303,0.94565421,0.20402104};
-		aside[]={0.62742984,9.95351e-09,0.77868032};
+		pos[]={4084.4312,149.71454,6308.6787};
+		dir[]={-1.2363449e-07,-0.70710665,0.70710689};
+		up[]={-1.2363445e-07,0.70710689,0.70710659};
+		aside[]={0.99999994,7.1054274e-15,1.7484555e-07};
 	};
 };
 binarizationWanted=0;
@@ -33,6 +33,7 @@ addons[]=
 	"ace_ballistics",
 	"A3_Weapons_F_Pistols_P07",
 	"acre_main",
+	"A3_Drones_F_Weapons_F_Gamma_Items",
 	"ace_goggles",
 	"ace_nightvision",
 	"A3_Weapons_F_Items",
@@ -47,7 +48,7 @@ class AddonsMetaData
 {
 	class List
 	{
-		items=15;
+		items=16;
 		class Item0
 		{
 			className="A3_Characters_F";
@@ -99,54 +100,61 @@ class AddonsMetaData
 		};
 		class Item7
 		{
+			className="A3_Drones_F";
+			name="Arma 3 Beta - Drones";
+			author="Bohemia Interactive";
+			url="https://www.arma3.com";
+		};
+		class Item8
+		{
 			className="ace_goggles";
 			name="ACE3 - Goggles";
 			author="ACE-Team";
 			url="https://ace3.acemod.org/";
 		};
-		class Item8
+		class Item9
 		{
 			className="ace_nightvision";
 			name="ACE3 - Night Vision";
 			author="ACE-Team";
 			url="https://ace3.acemod.org/";
 		};
-		class Item9
+		class Item10
 		{
 			className="ace_medical_engine";
 			name="ACE3 - Medical Engine";
 			author="ACE-Team";
 			url="https://ace3.acemod.org/";
 		};
-		class Item10
+		class Item11
 		{
 			className="ace_medical_treatment";
 			name="ACE3 - Medical Treatment";
 			author="ACE-Team";
 			url="https://ace3.acemod.org/";
 		};
-		class Item11
+		class Item12
 		{
 			className="acre_sys_prc152";
 			name="ACRE2 - AN/PRC-152";
 			author="ACRE2Team";
 			url="https://github.com/IDI-Systems/acre2";
 		};
-		class Item12
+		class Item13
 		{
 			className="ace_attach";
 			name="ACE3 - Attach";
 			author="ACE-Team";
 			url="https://ace3.acemod.org/";
 		};
-		class Item13
+		class Item14
 		{
 			className="ace_chemlights";
-			name="ace_chemlights";
+			name="ACE3 - Chemlights";
 			author="ACE-Team";
 			url="https://ace3.acemod.org/";
 		};
-		class Item14
+		class Item15
 		{
 			className="acre_sys_radio";
 			name="ACRE2 - Radio";
@@ -302,11 +310,16 @@ class Mission
 									};
 								};
 							};
+							class backpack
+							{
+								typeName="B_UAV_01_backpack_F";
+								isBackpack=1;
+							};
 							map="ItemMap";
 							compass="ItemCompass";
 							watch="ItemWatch";
 							radio="ItemRadio";
-							gps="ItemGPS";
+							gps="B_UavTerminal";
 							goggles="G_Combat";
 							hmd="NVGoggles";
 							headgear="H_HelmetB";

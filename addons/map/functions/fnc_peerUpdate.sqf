@@ -13,7 +13,7 @@ private _text = "";
 
 private _lastSeen = _peerData getOrDefault ["lastSeen", -1];
 if (_lastSeen != -1) then {
-    private _since = daytime - _lastSeen;
+    private _since = dayTime - _lastSeen;
     if (_since < 0) then {
         _since = _since + 24;
     };

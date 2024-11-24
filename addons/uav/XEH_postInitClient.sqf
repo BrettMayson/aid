@@ -2,7 +2,7 @@
 
 GVAR(uav) = objNull;
 
-GVAR(uavFilmGrain) = ppEffectCreate ["FilmGrain", 2012];
+GVAR(ppResolution) = ppEffectCreate ["Resolution", 2012];
 
 ["ACE_controlledUAV", {
     params ["_uav"];

@@ -8,7 +8,7 @@ GVAR(altitudeOffset) = 0;
     GVAR(altitudeOffset) = missionNamespace getVariable ["ace_common_mapAltitude", getNumber (configFile >> "CfgWorlds" >> worldName >> "elevationOffset")]
 }, 1] call CBA_fnc_waitAndExecute;
 
-GVAR(sources) = createHashmap;
+GVAR(sources) = createHashMap;
 
 #define OUTER_SIZE 0.6
 #define INNER_SIZE 0.3
