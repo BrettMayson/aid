@@ -15,4 +15,7 @@ GVAR(searchObjects) = [];
 GVAR(scanningObjects) = createHashMap;
 GVAR(peerObjects) = createHashMap;
 
+// Used by tickRadioSignal
+GVAR(signalCache) = createHashMap;
+
 ADDON = true;

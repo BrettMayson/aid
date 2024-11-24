@@ -32,9 +32,18 @@ private _txPower = _txData getVariable "power";
     private _rxSignal = 0;
 
     if (_rxFreq isEqualTo _txFreq) then {
-        _rxSignal = ([_txFreqRx, _txPower, _x, _txRadio] call acre_sys_signal_fnc_getSignal) select 0;
-        if (_rxSignal > 0) then {
-            _txSignal = ([_txFreq, _txPower, _txRadio, _x] call acre_sys_signal_fnc_getSignal) select 0;
+        private _cacheId = format ["%1_%2_%3", _txRadio, _x, _txFreq];
+        private _cached = GVAR(signalCache) getOrDefault [_cacheId, []];
+
+        if (_cached isEqualTo [] || { diag_tickTime - (_cached select 2) > 1 }) then {
+            _rxSignal = ([_txFreqRx, _txPower, _x, _txRadio] call FUNC(getSignal)) select 0;
+            if (_rxSignal > 0) then {
+                _txSignal = ([_txFreq, _txPower, _txRadio, _x] call FUNC(getSignal)) select 0;
+            };
+            GVAR(signalCache) set [_cacheId, [_txSignal, _rxSignal, diag_tickTime]];
+        } else {
+            _txSignal = (_cached select 0);
+            _rxSignal = (_cached select 1);
         };
     };
     private _hash = GVAR(playerRadios) getOrDefaultCall [toLower _x, { createHashMap }, true];

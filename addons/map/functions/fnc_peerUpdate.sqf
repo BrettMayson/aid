@@ -46,7 +46,8 @@ if ("radios" in _peerData) then {
     {
         private _name = _y get "name";
         private _channel = _y get "channelDescription";
-        _text = _text + format ["<br/>via %1<br/>  %2", _name, _channel];
+        private _image = format ["<img size='0.7' image='%1'/>", [_y get "strength"] call FUNC(strengthIcon)];
+        _text = _text + format ["<br/>via %1 %2<br/>  %3", _name, _image, _channel];
     } forEach (_peerData get "radios");
 };
 

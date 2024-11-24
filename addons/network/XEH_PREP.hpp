@@ -5,3 +5,5 @@ PREP(tickRadioSignal);
 PREP(hasCapability);
 PREP(getStrength);
 
+PREP(getSignal);
+PREP(handleSignalReturn);
