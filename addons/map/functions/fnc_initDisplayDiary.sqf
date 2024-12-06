@@ -48,6 +48,7 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
         GVAR(peerShown) = [];
         GVAR(cursorOverInfoMarker) = "";
         GVAR(cursorOverInfo) = false;
+        GVAR(lines) = [];
         _peerCtrl ctrlShow false;
         {
             deleteMarkerLocal _x;
@@ -56,4 +57,12 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
     (_close select 0) params ["_object", "_inner", "_outer"];
     GVAR(peerShown) = [_object, _inner, _outer];
     [_control, _peerCtrl, _object, _inner] call FUNC(peerUpdate);
+}];
+
+_mapCtrl ctrlAddEventHandler ["Draw", {
+    params ["_control"];
+    {
+        _x params ["_from", "_to", "_color"];
+        _control drawLine [_from, _to, _color, 6];
+    } forEach GVAR(lines);
 }];

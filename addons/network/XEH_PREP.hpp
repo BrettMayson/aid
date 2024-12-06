@@ -4,6 +4,5 @@ PREP(tickRadioSignal);
 
 PREP(hasCapability);
 PREP(getStrength);
-
-PREP(getSignal);
-PREP(handleSignalReturn);
+PREP(getAcreSignal);
+PREP(getChain);

@@ -6,16 +6,12 @@ GVAR(peers) = []; // All the peer radios
 
 // Used by tickRadioSignal
 GVAR(allRadios) = [];
-GVAR(radios) = [];
-GVAR(peerRadios) = createHashMap;
-GVAR(playerRadios) = createHashMap;
+GVAR(outerRadios) = [];
+GVAR(innerRadios) = [];
 
 // Used by tickDiscovery
 GVAR(searchObjects) = [];
 GVAR(scanningObjects) = createHashMap;
 GVAR(peerObjects) = createHashMap;
-
-// Used by tickRadioSignal
-GVAR(signalCache) = createHashMap;
 
 ADDON = true;

@@ -9,48 +9,33 @@ if (isNull _uav) exitWith {
     GVAR(ppResolution) ppEffectEnable false;
 };
 
+if !(GVAR(pixelate)) then {
+    GVAR(ppResolution) ppEffectEnable false;
+};
+
 // TODO define communication type, radio vs satcom
 
 private _distance = ace_player distance _uav;
 
-private _rayIgnore = _uav;
-private _rayStart = getPosASL _uav;
-
-private _disruptStrength = 0;
-private _hits = 0;
-
-while {true} do {
-    private _intersects = lineIntersectsSurfaces [_rayStart, eyePos ace_player, _rayIgnore, ace_player, true, 1];
-    if (count _intersects == 0) then {break};
-    _hits = _hits + 1;
-    (_intersects select 0) params ["_pos", "_normal", "_obj"];
-    if (isNull _obj) then { // terrain
-        _disruptStrength = _disruptStrength + 0.1;
-        _pos = _pos vectorAdd (vectorNormalized (getPosASL _uav vectorFromTo getPosASL ace_player) vectorMultiply 15);
-    } else {
-        _disruptStrength = _disruptStrength + 0.05;
-        _pos = _pos vectorAdd (vectorNormalized (getPosASL _uav vectorFromTo getPosASL ace_player) vectorMultiply 5);
-    };
-    if (_pos distance eyePos ace_player < 20) then {break};
-    _rayStart = _pos;
-    _rayIgnore = _obj;
+if (_distance < 8) exitWith {
+    GVAR(ppResolution) ppEffectEnable false;
 };
 
-private _distanceLOS = linearConversion [8, 12000, _distance, 0, 0.75, true];
+private _playerPos = getPosASL ace_player;
+// Add a meter of height to the player, since the terrain is usually held at chest height
+_playerPos set [2, (_playerPos select 2) + 1.4];
 
-_disruptStrength = _disruptStrength + _distanceLOS;
+private _signal = ([5800, 2000, getPosASL _uav, _playerPos] call EFUNC(signal,getSignal)) select 0;
+private _disrupt = 1 - _signal;
 
-if (_distance > 8) then {
-    // old film grain
-    // GVAR(ppResolution) ppEffectAdjust [1.5 min _disruptStrength, 0.1 max (1 - _disruptStrength), 1.25, 0.75, 0.75];
-    GVAR(ppResolution) ppEffectAdjust [GVAR(maxRes) / (1 + _disruptStrength * 6)];
-    GVAR(ppResolution) ppEffectCommit 0.25;
-    GVAR(ppResolution) ppEffectEnable true;
-    equipmentDisabled _uav params ["", "_ti"];
-    private _desired = _disruptStrength > 0.15;
-    if (_desired != _ti) then {
-        _uav disableTIEquipment _desired;
-    };
-} else {
-    GVAR(ppResolution) ppEffectEnable false;
+GVAR(ppResolution) ppEffectAdjust [1080 / (1 + (_disrupt * 6) + (1 - exp (-0.5 * (1 - _disrupt))))];
+GVAR(ppResolution) ppEffectCommit 0.15;
+GVAR(ppResolution) ppEffectEnable true;
+equipmentDisabled _uav params ["", "_ti"];
+private _desired = _signal < 0.85;
+if (_desired != _ti) then {
+    _uav disableTIEquipment _desired;
+};
+if (GVAR(showSignal)) then {
+    systemChat format ["Signal: %1", _signal];
 };

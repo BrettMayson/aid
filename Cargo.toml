@@ -1,0 +1,13 @@
+[package]
+name = "aid"
+version = "0.1.0"
+authors = ["Brett Mayson"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "aid"
+
+[dependencies]
+arma-rs = { version = "1.11.10" }
+dashmap = "6.1.0"

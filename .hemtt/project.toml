@@ -2,6 +2,12 @@ name = "Advanced Interactive Devices"
 prefix = "aid"
 mainprefix = "z"
 
+[files]
+include = [
+    "aid_x64.dll",
+    "aid.dll",
+]
+
 [hemtt.launch.default]
 workshop = [
     "450814997", # CBA

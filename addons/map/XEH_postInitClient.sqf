@@ -55,6 +55,9 @@ FUNC(createMarker) = {
 
 [QEGVAR(contacts,lost), {
     params ["_object"];
+    if (acre_player distance _object < 40) then {
+        WARNING_2("Lost contact with %1 at range of only %2m",_object,round (acre_player distance _object));
+    };
     private _markers = GVAR(sources) getOrDefault [netId _object, []];
     {
         _x params ["_inner", "_outer"];

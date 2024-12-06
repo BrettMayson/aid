@@ -32,3 +32,13 @@ if !(isMultiplayer) exitWith {};
     params ["_radio"];
     GVAR(allRadios) = GVAR(allRadios) - [_radio];
 }] call CBA_fnc_addEventHandler;
+
+[FUNC(getAcreSignal)] call acre_api_fnc_setCustomSignalFunc;
+
+cba_settings_allSettings = cba_settings_allSettings - [
+    "acre_sys_signal_signalModel",
+    "acre_sys_core_ignoreAntennaDirection",
+    "acre_sys_core_automaticAntennaDirection",
+    "acre_sys_core_terrainLoss",
+    "acre_sys_core_interference"
+];

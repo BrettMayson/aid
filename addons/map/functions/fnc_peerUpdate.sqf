@@ -8,7 +8,6 @@ private _peerData = [_object] call EFUNC(contacts,dataLoad);
 (_peerCtrl controlsGroupCtrl IDC_PEER_NAME)
     ctrlSetText (_peerData getOrDefault ["name", "Unknown"]);
 
-
 private _text = "";
 
 private _lastSeen = _peerData getOrDefault ["lastSeen", -1];
@@ -42,12 +41,56 @@ if ("altitude" in _peerData) then {
 };
 
 if ("radios" in _peerData) then {
+    GVAR(lines) = [];
     _text = _text + "<br/>";
     {
+        private _radio_id = _x;
         private _name = _y get "name";
         private _channel = _y get "channelDescription";
-        private _image = format ["<img size='0.7' image='%1'/>", [_y get "strength"] call FUNC(strengthIcon)];
-        _text = _text + format ["<br/>via %1 %2<br/>  %3", _name, _image, _channel];
+        private _image = format ["<img size='0.7' image='%1'/>", [(_y get "chain") select 0] call FUNC(strengthIcon)];
+        private _color = [
+            [1,0,0],
+            [0,1,0],
+            [0,0,1],
+            [1,1,0],
+            [1,0,1],
+            [0,1,1],
+            [1,1,1]
+        ] select (_forEachIndex min 7);
+        _text = _text + format [
+            "<br/>via <t color='%1'>%2</t> %3<br/>  %4",
+            _color call BIS_fnc_colorRGBtoHTML,
+            _name,
+            _image,
+            _channel
+        ];
+        if (count (_y get "chain") < 2) then {
+            continue;
+        };
+        private _chain = (_y get "chain") select 2;
+        if (count _chain < 2) then {
+            continue;
+        };
+        private _origin = (_chain select 0) select 0;
+        {
+            if (_forEachIndex == 0) then {
+                continue;
+            };
+            _x params ["_radio", "_signal"];
+            _color set [3, linearConversion [0, 1, _signal, 0.5, 1]];
+            GVAR(lines) pushBack [
+                [_origin] call acre_sys_radio_fnc_getRadioPos,
+                [_radio] call acre_sys_radio_fnc_getRadioPos,
+                _color
+            ];
+            if (_forEachIndex != (count _chain - 1)) then {
+                _text = _text + format [
+                    "<br/>  + %1",
+                    name ([_radio] call acre_sys_radio_fnc_getRadioObject)
+                ];
+            };
+            _origin = _radio;
+        } forEach _chain;
     } forEach (_peerData get "radios");
 };
 
