@@ -40,4 +40,7 @@ if (_rxFreq isEqualTo _txFreq) then {
     };
 } else {
     ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, str _txFreqRx, 0, -992]]) params ["_ret", "_code"];
+    if (_code != 0) then {
+        WARNING_1("Failed to set signal strength: %1",_ret);
+    };
 };

@@ -1,12 +1,15 @@
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
 use std::sync::RwLock;
+use std::time::SystemTime;
 
 use arma_rs::{Context, ContextState, Group};
 use dashmap::DashMap;
 
 pub fn group() -> Group {
-    Group::new().command("set", cmd_set).command("get", cmd_get)
+    Group::new()
+        .command("set", cmd_set)
+        .command("get", cmd_get)
 }
 
 fn cmd_set(
@@ -28,6 +31,16 @@ fn cmd_set(
     let Some(networks) = ctx.group().get::<Networks>() else {
         return Err("Mesh network not initialized".to_string());
     };
+    // remove `from` from all networks, except the one we are adding to
+    for network in networks.networks.iter_mut() {
+        if network.key() != &freq {
+            network
+                .write()
+                .expect("not poisoned")
+                .connections
+                .remove(&from);
+        }
+    }
     let network = networks
         .networks
         .entry(freq)
@@ -54,6 +67,11 @@ fn cmd_get(
     let from = from.to_lowercase();
     let to = to.to_lowercase();
     let freq = freq.to_lowercase();
+    if ctx.group().get::<Networks>().is_none() {
+        ctx.group().set(Networks {
+            networks: DashMap::new(),
+        });
+    }
     let Some(networks) = ctx.group().get::<Networks>() else {
         return Err("Mesh network not initialized".to_string());
     };
@@ -66,7 +84,10 @@ fn cmd_get(
         .get_connection(&from, &to)
         .ok_or_else(|| "No path found".to_string())?;
     let min_strength = strength as f32 / 255.0;
-    let min_db = path.iter().map(|(_, _, db)| *db).fold(f32::INFINITY, f32::min);
+    let min_db = path
+        .iter()
+        .map(|(_, _, db)| *db)
+        .fold(f32::INFINITY, f32::min);
     let path = path
         .into_iter()
         .map(|(node, strength, db)| (node, strength as f32 / 255.0, db))
@@ -80,7 +101,7 @@ struct Networks {
 }
 
 pub struct MeshNetwork {
-    connections: HashMap<String, HashMap<String, (u8, f32)>>, // (strength, decibels)
+    connections: HashMap<String, HashMap<String, (u8, f32, SystemTime)>>, // (strength, decibels, time)
 }
 
 impl MeshNetwork {
@@ -96,7 +117,7 @@ impl MeshNetwork {
         self.connections
             .entry(node_a.to_string())
             .or_default()
-            .insert(node_b.to_string(), (strength, decibels));
+            .insert(node_b.to_string(), (strength, decibels, SystemTime::now()));
     }
 
     // Get the best path between two nodes based on highest minimum strength
@@ -126,7 +147,11 @@ impl MeshNetwork {
             }
 
             if let Some(neighbors) = self.connections.get(&current_node) {
-                for (neighbor, &(strength, _)) in neighbors {
+                for (neighbor, &(strength, _, time)) in neighbors {
+                    // If the connection is older than 20 seconds, ignore it
+                    if time.elapsed().unwrap().as_secs() > 20 {
+                        continue;
+                    }
                     // Compute the minimum strength along the path
                     let new_strength = current_min_strength.min(strength);
                     if new_strength > *best_strengths.get(neighbor).unwrap_or(&0) {
@@ -149,7 +174,7 @@ impl MeshNetwork {
         let mut min_strength = best_strengths[end];
 
         while let Some(predecessor) = predecessors.get(&current_node) {
-            let (strength, decibels) = self.connections[predecessor][&current_node];
+            let (strength, decibels, _) = self.connections[predecessor][&current_node];
             path.push((current_node.clone(), strength, decibels));
             min_strength = min_strength.min(strength);
             current_node = predecessor.clone();

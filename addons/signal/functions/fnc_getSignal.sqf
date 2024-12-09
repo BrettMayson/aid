@@ -27,7 +27,7 @@ private _Lm = _ituLoss + ((random 1) - 0.5);
 private _Lb = _Ptx - _Ltx - _Lfs - _Lm - _Lrx;
 
 private _sinadRating = getNumber (configFile >> "CfgAcreComponents" >> _realRadio >> "sinadRating");
-private _Sl = (abs _sinadRating)/2;
+private _Sl = (abs _sinadRating) / 2;
 private _Slp = 0.075;
 
 private _bottom = _sinadRating - (_Sl * _Slp);

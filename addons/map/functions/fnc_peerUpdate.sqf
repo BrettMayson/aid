@@ -79,8 +79,8 @@ if ("radios" in _peerData) then {
             _x params ["_radio", "_signal"];
             _color set [3, linearConversion [0, 1, _signal, 0.5, 1]];
             GVAR(lines) pushBack [
-                [_origin] call acre_sys_radio_fnc_getRadioPos,
-                [_radio] call acre_sys_radio_fnc_getRadioPos,
+                [_origin] call FUNC(radioPos),
+                [_radio] call FUNC(radioPos),
                 _color
             ];
             if (_forEachIndex != (count _chain - 1)) then {

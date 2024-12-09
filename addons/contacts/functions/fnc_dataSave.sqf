@@ -33,7 +33,9 @@ if (_object isKindOf "Man") then {
 } else {
     _data set ["name", getText (configFile >> "CfgVehicles" >> typeOf _object >> "displayName")];
 };
+
 _data set ["id", netId _object];
+_data set ["posASL", getPosASL _object];
 _data set ["lastSeen", dayTime];
 _data set ["speed", vectorMagnitude velocity _object];
 _data set ["bearing", getDir _object];

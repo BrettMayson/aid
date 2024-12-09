@@ -7,3 +7,4 @@ PREP(peerUpdate);
 PREP(drawTrail);
 
 PREP(strengthIcon);
+PREP(radioPos);
