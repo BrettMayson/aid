@@ -23,7 +23,7 @@ while {true} do {
         };
     };
     if (_pos distance _end < 15) then {break};
-    if (_disruptStrength > 0.7) then {break};
+    if (_disruptStrength >= 1) then {break};
     _start = _pos;
     _ig1 = _obj;
 };
