@@ -76,11 +76,17 @@ if ("radios" in _peerData) then {
             if (_forEachIndex == 0) then {
                 continue;
             };
+            private _originPos = [_origin] call FUNC(radioPos);
+            private _radioPos = [_radio] call FUNC(radioPos);
+            if (_originPos isEqualTo [0,0,0] || _radioPos isEqualTo [0,0,0]) then {
+                _origin = _radio;
+                continue;
+            };
             _x params ["_radio", "_signal"];
             _color set [3, linearConversion [0, 1, _signal, 0.5, 1]];
             GVAR(lines) pushBack [
-                [_origin] call FUNC(radioPos),
-                [_radio] call FUNC(radioPos),
+                _originPos,
+                _radioPos,
                 _color
             ];
             if (_forEachIndex != (count _chain - 1)) then {

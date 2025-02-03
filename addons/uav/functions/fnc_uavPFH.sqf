@@ -25,17 +25,23 @@ private _playerPos = getPosASL ace_player;
 // Add a meter of height to the player, since the terrain is usually held at chest height
 _playerPos set [2, (_playerPos select 2) + 1.4];
 
-private _signal = ([5800, 2000, getPosASL _uav, _playerPos] call EFUNC(signal,getSignal)) select 0;
-private _disrupt = 1 - _signal;
+private _signal = ([GVAR(freq), GVAR(power), getPosASL _uav, _playerPos] call EFUNC(signal,getSignal)) select 0;
+_signal = linearConversion [0,0.7,_signal,0,1,true];
+private _effect = _signal ^ 0.4;
+private _disrupt = 1 - _effect;
 
-GVAR(ppResolution) ppEffectAdjust [1080 / (1 + (_disrupt * 6) + (1 - exp (-0.5 * (1 - _disrupt))))];
+GVAR(ppResolution) ppEffectAdjust [1080 / (1 + (_disrupt * 4) + (1 - exp (-0.3 * (1 - _disrupt))))];
 GVAR(ppResolution) ppEffectCommit 0.15;
 GVAR(ppResolution) ppEffectEnable true;
 equipmentDisabled _uav params ["", "_ti"];
-private _desired = _signal < 0.85;
+private _desired = _signal < 0.5;
 if (_desired != _ti) then {
     _uav disableTIEquipment _desired;
 };
 if (GVAR(showSignal)) then {
-    systemChat format ["Signal: %1", _signal];
+    systemChat format ["Signal: %1%%", round (_signal * 100)];
+};
+if (_signal == 0) then {
+    systemChat "Signal lost";
+    player remoteControl objNull;
 };

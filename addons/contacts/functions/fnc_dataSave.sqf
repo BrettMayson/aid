@@ -34,14 +34,16 @@ if (_object isKindOf "Man") then {
     _data set ["name", getText (configFile >> "CfgVehicles" >> typeOf _object >> "displayName")];
 };
 
-_data set ["id", netId _object];
-_data set ["posASL", getPosASL _object];
-_data set ["lastSeen", dayTime];
-_data set ["speed", vectorMagnitude velocity _object];
-_data set ["bearing", getDir _object];
-_data set ["altitude", getPosASL _object select 2];
+if ([_object, "gps"] call EFUNC(network,hasCapability)) then {
+    _data set ["posASL", getPosASL _object];
+    _data set ["speed", vectorMagnitude velocity _object];
+    _data set ["bearing", getDir _object];
+    _data set ["altitude", getPosASL _object select 2];
+    _data set ["trail", [_object] call FUNC(trail)];
+};
 
-_data set ["trail", [_object] call FUNC(trail)];
+_data set ["id", netId _object];
+_data set ["lastSeen", dayTime];
 
 GVAR(contactData) set [netId _object, _data];
 

@@ -1,9 +1,14 @@
 #include "..\script_component.hpp"
 
-params ["_start", "_end", ["_ig1", objNull], ["_ig2", objNull]];
+params ["_f", "_start", "_end", ["_ig1", objNull], ["_ig2", objNull]];
 
 private _disruptStrength = 0;
 private _hits = 0;
+
+// change the impact based on the frequency
+private _frequencyRatio = linearConversion [10, 10000, _f, 1, 50, true];
+private _terrainDisrupt = 0.025 * _frequencyRatio;
+private _objectDisrupt = 0.005 * _frequencyRatio;
 
 while {true} do {
     private _intersects = lineIntersectsSurfaces [_start, _end, _ig1, _ig2, true, 1];
@@ -15,10 +20,10 @@ while {true} do {
         _hits = 1;
     } else {
         if (isNull _obj) then { // terrain
-            _disruptStrength = _disruptStrength + 0.05;
+            _disruptStrength = _disruptStrength + _terrainDisrupt;
             _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 12);
         } else {
-            _disruptStrength = _disruptStrength + 0.01;
+            _disruptStrength = _disruptStrength + _objectDisrupt;
             _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 3);
         };
     };
@@ -28,4 +33,6 @@ while {true} do {
     _ig1 = _obj;
 };
 
-_disruptStrength
+if (_disruptStrength >= 1) exitWith { 1 };
+
+_disruptStrength + (linearConversion [100, 3000, _start distance _end, 0, 1, true] * ((rain / 10) * _frequencyRatio));

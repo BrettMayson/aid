@@ -3,6 +3,9 @@ ADDON = false;
 #include "XEH_PREP.hpp"
 ADDON = true;
 
+GVAR(freq) = 1300;
+GVAR(power) = 2000;
+
 [
     QGVAR(pixelate),
     "CHECKBOX",
