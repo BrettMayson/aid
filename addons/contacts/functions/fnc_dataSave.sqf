@@ -38,7 +38,6 @@ if ([_object, "gps"] call EFUNC(network,hasCapability)) then {
     _data set ["posASL", getPosASL _object];
     _data set ["speed", vectorMagnitude velocity _object];
     _data set ["bearing", getDir _object];
-    _data set ["altitude", getPosASL _object select 2];
     _data set ["trail", [_object] call FUNC(trail)];
 };
 

@@ -36,8 +36,8 @@ if ("bearing" in _peerData) then {
     _text = _text + format ["<br/>Bearing: %1°", round (_peerData get "bearing")];
 };
 
-if ("altitude" in _peerData) then {
-    _text = _text + format ["<br/>Altitude: %1 m", round ((_peerData get "altitude") + GVAR(altitudeOffset))];
+if ("posASL" in _peerData) then {
+    _text = _text + format ["<br/>Altitude: %1 m", round (((_peerData get "posASL") select 2) + GVAR(altitudeOffset))];
 };
 
 if ("radios" in _peerData) then {
@@ -76,13 +76,14 @@ if ("radios" in _peerData) then {
             if (_forEachIndex == 0) then {
                 continue;
             };
+            _x params ["_radio", "_signal"];
             private _originPos = [_origin] call FUNC(radioPos);
             private _radioPos = [_radio] call FUNC(radioPos);
+            systemChat format ["%1 %2", _originPos, _radioPos];
             if (_originPos isEqualTo [0,0,0] || _radioPos isEqualTo [0,0,0]) then {
                 _origin = _radio;
                 continue;
             };
-            _x params ["_radio", "_signal"];
             _color set [3, linearConversion [0, 1, _signal, 0.5, 1]];
             GVAR(lines) pushBack [
                 _originPos,

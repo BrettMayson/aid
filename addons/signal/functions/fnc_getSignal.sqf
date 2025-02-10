@@ -11,6 +11,10 @@ if (_realRadio isEqualTo "acre_bf888s") then {
     // Drop to 2.5W from 5W, just for fun
     _mW = _mW * 0.5;
 };
+if (_realRadio isEqualTo "acre_prc343") then {
+    // Increase from 400mw to 800mw
+    _mW = _mW * 2;
+};
 
 private _distance = _txPos distance _rxPos;
 
