@@ -12,6 +12,7 @@ private _txAnt = ([_transmitterClass] call acre_sys_components_fnc_findAntenna) 
 private _txPos = _txAnt select 2;
 if (_txAnt select 0 == "ACRE_643CM_VHF_TNC") then {
     _txPos set [2, (_txPos select 2) + 4];
+    _mW = 20000;
 };
 
-[_f, _mW, _rxPos, _txPos, _receiverClass] call FUNC(getSignal);
+[_f, _mW, _rxPos, _txPos, _receiverClass] call FUNC(getSignal)

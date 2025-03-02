@@ -79,7 +79,6 @@ if ("radios" in _peerData) then {
             _x params ["_radio", "_signal"];
             private _originPos = [_origin] call FUNC(radioPos);
             private _radioPos = [_radio] call FUNC(radioPos);
-            systemChat format ["%1 %2", _originPos, _radioPos];
             if (_originPos isEqualTo [0,0,0] || _radioPos isEqualTo [0,0,0]) then {
                 _origin = _radio;
                 continue;

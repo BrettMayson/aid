@@ -2,11 +2,11 @@
 
 params ["_f", "_start", "_end", ["_ig1", objNull], ["_ig2", objNull]];
 
-private _disruptStrength = 0;
+private _disruptStrength = GVAR(baseDisruptStrength);
 private _hits = 0;
 
 // change the impact based on the frequency
-private _frequencyRatio = linearConversion [10, 10000, _f, 1, 20, true];
+private _frequencyRatio = linearConversion [10, 20000, _f, 0.5, 20, true];
 private _terrainDisrupt = 0.015 * _frequencyRatio;
 private _objectDisrupt = 0.005 * _frequencyRatio;
 
@@ -20,7 +20,9 @@ while {true} do {
         _hits = 1;
     } else {
         if (isNull _obj) then { // terrain
-            _disruptStrength = _disruptStrength + _terrainDisrupt;
+            private _depth = (getTerrainHeightASL _pos) - (_pos select 2);
+            private _impact = linearConversion [0, 50, _depth, 1, 5, true];
+            _disruptStrength = _disruptStrength + (_terrainDisrupt * _impact);
             _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 25);
         } else {
             _disruptStrength = _disruptStrength + _objectDisrupt;

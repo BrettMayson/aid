@@ -16,3 +16,9 @@ workshop = [
     "1779063631", # Zeus Enhance
 ]
 mission = "2_riflemen.Stratis"
+
+[hemtt.launch.archipelago]
+extends = "default"
+workshop = [
+    "1726184748", # Archipelago
+]
