@@ -10,6 +10,7 @@ if (count GVAR(searchObjects) == 0) then {
     GVAR(searchObjects) append ("GroundWeaponHolder" allObjects 0); 
     GVAR(searchObjects) append ("WeaponHolderSimulated" allObjects 1);
     GVAR(searchObjects) = GVAR(searchObjects) arrayIntersect GVAR(searchObjects);
+    GVAR(searchSpace) = count GVAR(searchObjects);
 };
 
 private _checking = GVAR(searchObjects) deleteAt 0;
@@ -24,7 +25,7 @@ if (_checking isKindOf "Man") then {
     private _containers = [_checking];
     _containers append ((everyContainer _checking) apply {_x select 1});
     {
-        _radios = ((getItemCargo _x) select 0) select {(_x select [0, 4]) == "ACRE"};
+        _radios = ((getItemCargo _x) select 0) select {(_x select [0, 4]) == "acre"};
         {
             _radios pushBack _x;
             private _mountedRadio = [_x] call acre_sys_rack_fnc_getMountedRadio;

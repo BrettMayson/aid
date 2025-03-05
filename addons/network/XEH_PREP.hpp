@@ -6,3 +6,4 @@ PREP(hasCapability);
 PREP(getStrength);
 PREP(getAcreSignal);
 PREP(getChain);
+PREP(radioData);

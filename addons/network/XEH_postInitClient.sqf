@@ -10,7 +10,7 @@ if !(isMultiplayer) exitWith {};
 
 [{
     call FUNC(tickPeers);
-}, 0.25] call CBA_fnc_addPerFrameHandler;
+}, 0.1] call CBA_fnc_addPerFrameHandler;
 
 [QGVAR(syncCount), {
     params ["_count"];

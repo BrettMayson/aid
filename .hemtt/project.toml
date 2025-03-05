@@ -22,3 +22,10 @@ extends = "default"
 workshop = [
     "1726184748", # Archipelago
 ]
+
+[hemtt.launch.profile]
+extends = "default"
+workshop = [
+    "1652506957", # Arma Script Profiler
+    "1645973522", # Intercept
+]

@@ -7,29 +7,28 @@ use arma_rs::{Context, ContextState, Group};
 use dashmap::DashMap;
 
 pub fn group() -> Group {
-    Group::new()
-        .command("set", cmd_set)
-        .command("get", cmd_get)
+    Group::new().command("set", cmd_set).command("get", cmd_get)
 }
 
 fn cmd_set(
     ctx: Context,
     from: String,
     to: String,
-    freq: String,
+    freq: f32,
     strength: f32,
     db: f32,
 ) -> Result<(), String> {
     let from = from.to_lowercase();
     let to = to.to_lowercase();
-    let freq = freq.to_lowercase();
-    if ctx.group().get::<Networks>().is_none() {
+    let freq = freq.to_string();
+    let networks = ctx.group().get::<Networks>();
+    let networks = if let Some(networks) = networks {
+        networks
+    } else {
         ctx.group().set(Networks {
             networks: DashMap::new(),
         });
-    }
-    let Some(networks) = ctx.group().get::<Networks>() else {
-        return Err("Mesh network not initialized".to_string());
+        ctx.group().get::<Networks>().unwrap()
     };
     // remove `from` from all networks, except the one we are adding to
     for network in networks.networks.iter_mut() {
@@ -62,18 +61,19 @@ fn cmd_get(
     ctx: Context,
     from: String,
     to: String,
-    freq: String,
+    freq: f32,
 ) -> Result<(f32, f32, Vec<(String, f32, f32)>), String> {
     let from = from.to_lowercase();
     let to = to.to_lowercase();
-    let freq = freq.to_lowercase();
-    if ctx.group().get::<Networks>().is_none() {
+    let freq = freq.to_string();
+    let networks = ctx.group().get::<Networks>();
+    let networks = if let Some(networks) = networks {
+        networks
+    } else {
         ctx.group().set(Networks {
             networks: DashMap::new(),
         });
-    }
-    let Some(networks) = ctx.group().get::<Networks>() else {
-        return Err("Mesh network not initialized".to_string());
+        ctx.group().get::<Networks>().unwrap()
     };
     let network = networks
         .networks
@@ -148,8 +148,8 @@ impl MeshNetwork {
 
             if let Some(neighbors) = self.connections.get(&current_node) {
                 for (neighbor, &(strength, _, time)) in neighbors {
-                    // If the connection is older than 20 seconds, ignore it
-                    if time.elapsed().unwrap().as_secs() > 20 {
+                    // If the connection is older than 30 seconds, ignore it
+                    if time.elapsed().unwrap().as_secs() > 30 {
                         continue;
                     }
                     // Compute the minimum strength along the path

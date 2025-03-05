@@ -2,6 +2,7 @@
 
 GVAR(contacts) = createHashMap;
 GVAR(lastRadioOwner) = createHashMap;
+GVAR(cooldown) = createHashMap;
 
 [QEGVAR(network,peerDiscovered), {
     params ["_radio", "_object"];
@@ -13,6 +14,9 @@ GVAR(lastRadioOwner) = createHashMap;
 
 [QEGVAR(network,peerInRange), {
     params ["_radio", "_object"];
+    private _cooldown = GVAR(cooldown) getOrDefault [_radio, 0];
+    if (_cooldown > CBA_missionTime) exitWith {};
+    GVAR(cooldown) set [_radio, CBA_missionTime + 0.2 + random 0.5];
     private _radios = GVAR(contacts) getOrDefault [netId _object, [], true];
     private _data = [_object, _radios] call FUNC(dataSave);
     [QGVAR(inRange), [_object, _data, _radios]] call CBA_fnc_localEvent;
@@ -24,15 +28,16 @@ GVAR(lastRadioOwner) = createHashMap;
     if (isNull _object) exitWith {};
     private _radios = GVAR(contacts) getOrDefault [netId _object, [], true];
     _radios = _radios - [_radio];
-    GVAR(contacts) set [netId _object, _radios];
     [QGVAR(lost), [_object, _radio, _radios]] call CBA_fnc_localEvent;
 }] call CBA_fnc_addEventHandler;
 
 [{
-    private _previousColor = acre_player getVariable [QGVAR(color), ""];
-    private _currentColor = [acre_player, false] call FUNC(color);
-    if (_previousColor != _currentColor) then {
-        acre_player setVariable [QGVAR(color), _currentColor, true];
+    if (alive acre_player) then {
+        private _previousColor = acre_player getVariable [QGVAR(color), ""];
+        private _currentColor = [acre_player, false] call FUNC(color);
+        if (_previousColor != _currentColor) then {
+            acre_player setVariable [QGVAR(color), _currentColor, true];
+        };
     };
 
     // update color of AI in group if player is leader

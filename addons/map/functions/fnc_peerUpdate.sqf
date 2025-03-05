@@ -5,8 +5,12 @@ params ["_control", "_peerCtrl", "_object", "_inner"];
 GVAR(cursorOverInfoMarker) = _inner;
 private _peerData = [_object] call EFUNC(contacts,dataLoad);
 
+private _name = _peerData getOrDefault ["name", "Unknown"];
+if (aid_debug) then {
+    _name = format ["%1 (%2)", _name, netId _object];
+};
 (_peerCtrl controlsGroupCtrl IDC_PEER_NAME)
-    ctrlSetText (_peerData getOrDefault ["name", "Unknown"]);
+    ctrlSetText _name;
 
 private _text = "";
 
@@ -38,14 +42,18 @@ if ("bearing" in _peerData) then {
 
 if ("posASL" in _peerData) then {
     _text = _text + format ["<br/>Altitude: %1 m", round (((_peerData get "posASL") select 2) + GVAR(altitudeOffset))];
+    _text = _text + format ["<br/>Distance: %1", [(_peerData get "posASL") distance2D (getPosASL acre_player)] call FUNC(distanceString)];
 };
 
 if ("radios" in _peerData) then {
     GVAR(lines) = [];
     _text = _text + "<br/>";
     {
+        if (count (_y get "chain") < 2) then {
+            continue;
+        };
         private _radio_id = _x;
-        private _name = _y get "name";
+        private _name = if aid_debug then { _x } else { _y get "name" };
         private _channel = _y get "channelDescription";
         private _image = format ["<img size='0.7' image='%1'/>", [(_y get "chain") select 0] call FUNC(strengthIcon)];
         private _color = [
@@ -61,7 +69,7 @@ if ("radios" in _peerData) then {
             "<br/>via <t color='%1'>%2</t> %3<br/>  %4",
             _color call BIS_fnc_colorRGBtoHTML,
             _name,
-            _image,
+            if aid_debug then { format ["%1 (%2)", _image, (_y get "chain") select 0] } else { _image },
             _channel
         ];
         if (count (_y get "chain") < 2) then {
@@ -77,6 +85,13 @@ if ("radios" in _peerData) then {
                 continue;
             };
             _x params ["_radio", "_signal"];
+            if (_forEachIndex != (count _chain - 1)) then {
+                _text = _text + format [
+                    "<br/>  + %1%2",
+                    name ([_radio] call acre_sys_radio_fnc_getRadioObject),
+                    if aid_debug then { format [" (%1)", _radio] } else { "" }
+                ];
+            };
             private _originPos = [_origin] call FUNC(radioPos);
             private _radioPos = [_radio] call FUNC(radioPos);
             if (_originPos isEqualTo [0,0,0] || _radioPos isEqualTo [0,0,0]) then {
@@ -89,12 +104,6 @@ if ("radios" in _peerData) then {
                 _radioPos,
                 _color
             ];
-            if (_forEachIndex != (count _chain - 1)) then {
-                _text = _text + format [
-                    "<br/>  + %1",
-                    name ([_radio] call acre_sys_radio_fnc_getRadioObject)
-                ];
-            };
             _origin = _radio;
         } forEach _chain;
     } forEach (_peerData get "radios");
@@ -103,21 +112,31 @@ if ("radios" in _peerData) then {
 private _infoCtrl = (_peerCtrl controlsGroupCtrl IDC_PEER_INFO);
 _infoCtrl ctrlSetStructuredText parseText _text;
 // don't move the window while the cursor is over it
-private _pos = if (GVAR(cursorOverInfo)) then {
-    ctrlPosition _peerCtrl
+
+private _height = (ctrlTextHeight _infoCtrl);
+private _pos = if GVAR(followCursor) then {
+    if (GVAR(cursorOverInfo)) then {
+        ctrlPosition _peerCtrl
+    } else {
+        (_control ctrlMapWorldToScreen (getMarkerPos GVAR(cursorOverInfoMarker)))
+            params ["_x", "_y"];
+        [
+            _x + 0.01,
+            _y + 0.01
+        ]
+    };
 } else {
-    (_control ctrlMapWorldToScreen (getMarkerPos GVAR(cursorOverInfoMarker)))
-        params ["_x", "_y"];
+    private _adjust = if ((getResolution select 0) > 3000) then { safeZoneW / 4 } else { 0.01 };
     [
-        _x + 0.01,
-        _y + 0.01
+        safeZoneX + safeZoneW - PEER_WIDTH - _adjust,
+        safeZoneY + (safeZoneH / 3)
     ]
 };
 _peerCtrl ctrlSetPosition [
-    _pos#0, _pos#1, PEER_WIDTH, (ctrlTextHeight _infoCtrl) + 0.04
+    _pos#0, _pos#1, PEER_WIDTH, _height + 0.04
 ];
 private _pos = ctrlPosition _infoCtrl;
-_infoCtrl ctrlSetPosition [_pos#0, _pos#1, PEER_WIDTH, (ctrlTextHeight _infoCtrl)];
+_infoCtrl ctrlSetPosition [_pos#0, _pos#1, PEER_WIDTH, _height];
 _infoCtrl ctrlCommit 0;
 
 _peerCtrl ctrlCommit 0;

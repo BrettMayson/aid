@@ -4,6 +4,8 @@ ADDON = false;
 
 #include "\a3\ui_f\hpp\defineDIKCodes.inc"
 
+aid_debug = false;
+
 GVAR(peerDeleted) = false;
 
 [QUOTE(ADDON), "DeleteMarker", ["Delete Lost Contact", "Deletes a lost contact from the map"], {}, {
@@ -19,6 +21,16 @@ GVAR(peerDeleted) = false;
     private _peerCtrl = (findDisplay 12) displayCtrl IDC_PEER;
     _peerCtrl ctrlShow false;
 }, [DIK_DELETE, [false, false, false]]] call CBA_fnc_addKeybind;
+
+[
+    QGVAR(followCursor),
+    "CHECKBOX",
+    "Infobox follows cursor",
+    "AID - Map",
+    false,
+    0
+] call CBA_fnc_addSetting;
+
 
 GVAR(trailMarkers) = [];
 GVAR(lines) = [];

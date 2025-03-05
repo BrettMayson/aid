@@ -6,5 +6,6 @@ PREP(peerUpdate);
 
 PREP(drawTrail);
 
-PREP(strengthIcon);
+PREP(distanceString);
 PREP(radioPos);
+PREP(strengthIcon);

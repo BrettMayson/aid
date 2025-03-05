@@ -5,9 +5,9 @@ params ["_from"];
 private _chain = [];
 
 {
-    private _data = [_x, "getCurrentChannelData"] call acre_sys_data_fnc_dataEvent;
+    private _data = [_x] call FUNC(radioData);
     private _freq = _data getVariable "frequencyTX";
-    ("aid" callExtension ["mesh:get", [_from, _x, str _freq]]) params ["_ret", "_code"];
+    ("aid" callExtension ["mesh:get", [_from, _x, _freq]]) params ["_ret", "_code"];
     if (_code == 0) then {
         _ret = parseSimpleArray _ret;
         if ((count (_ret select 2)) > 1) then {
