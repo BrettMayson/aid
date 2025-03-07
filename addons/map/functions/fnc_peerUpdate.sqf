@@ -111,7 +111,6 @@ if ("radios" in _peerData) then {
 
 private _infoCtrl = (_peerCtrl controlsGroupCtrl IDC_PEER_INFO);
 _infoCtrl ctrlSetStructuredText parseText _text;
-// don't move the window while the cursor is over it
 
 private _height = (ctrlTextHeight _infoCtrl);
 private _pos = if GVAR(followCursor) then {
