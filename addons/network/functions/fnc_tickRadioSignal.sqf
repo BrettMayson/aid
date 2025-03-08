@@ -13,7 +13,7 @@ if (count GVAR(allRadios) == 0) exitWith {};
 private _first = true;
 
 while {diag_tickTime < _end} do {
-    if (count GVAR(allRadios) == GVAR(innerIndex)) then {
+    if (count GVAR(allRadios) >= GVAR(innerIndex) || count GVAR(allRadios) >= GVAR(outerIndex)) then {
         GVAR(innerIndex) = 0;
         GVAR(outerIndex) = GVAR(outerIndex) + 1;
         if (count GVAR(allRadios) == GVAR(outerIndex)) then {
@@ -32,6 +32,8 @@ while {diag_tickTime < _end} do {
     _count = _count + 1;
 
     if (GVAR(innerIndex) >= count GVAR(allRadios) || GVAR(outerIndex) >= count GVAR(allRadios)) then {
+        GVAR(innerIndex) = 0;
+        GVAR(outerIndex) = 0;
         break;
     };
     private _txRadio = GVAR(allRadios) select GVAR(outerIndex);
