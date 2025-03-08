@@ -16,7 +16,7 @@ while {diag_tickTime < _end} do {
     if (count GVAR(allRadios) >= GVAR(innerIndex) || count GVAR(allRadios) >= GVAR(outerIndex)) then {
         GVAR(innerIndex) = 0;
         GVAR(outerIndex) = GVAR(outerIndex) + 1;
-        if (count GVAR(allRadios) == GVAR(outerIndex)) then {
+        if (count GVAR(allRadios) >= GVAR(outerIndex)) then {
             GVAR(outerIndex) = 0;
         };
     };
