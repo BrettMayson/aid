@@ -31,6 +31,9 @@ while {diag_tickTime < _end} do {
 
     _count = _count + 1;
 
+    if (GVAR(innerIndex) >= count GVAR(allRadios) || GVAR(outerIndex) >= count GVAR(allRadios)) then {
+        break;
+    };
     private _txRadio = GVAR(allRadios) select GVAR(outerIndex);
     private _rxRadio = GVAR(allRadios) select GVAR(innerIndex);
     GVAR(innerIndex) = GVAR(innerIndex) + 1;
