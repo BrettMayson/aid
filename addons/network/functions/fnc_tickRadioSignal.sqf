@@ -13,10 +13,10 @@ if (count GVAR(allRadios) == 0) exitWith {};
 private _first = true;
 
 while {diag_tickTime < _end} do {
-    if (count GVAR(allRadios) >= GVAR(innerIndex) || count GVAR(allRadios) >= GVAR(outerIndex)) then {
+    if (count GVAR(allRadios) <= GVAR(innerIndex) || count GVAR(allRadios) <= GVAR(outerIndex)) then {
         GVAR(innerIndex) = 0;
         GVAR(outerIndex) = GVAR(outerIndex) + 1;
-        if (count GVAR(allRadios) >= GVAR(outerIndex)) then {
+        if (count GVAR(allRadios) <= GVAR(outerIndex)) then {
             GVAR(outerIndex) = 0;
         };
     };
@@ -61,9 +61,15 @@ while {diag_tickTime < _end} do {
     };
 
     private _txData = [_txRadio] call FUNC(radioData);
+    if (isNil "_txData") then {
+        continue;
+    };
     private _txFreq = _txData getVariable "frequencyTX";
 
     private _rxData = [_rxRadio] call FUNC(radioData);
+    if (isNil "_rxData") then {
+        continue;
+    };
     private _rxFreq = _rxData getVariable "frequencyRX";
     
     if (_rxFreq != _txFreq) then {

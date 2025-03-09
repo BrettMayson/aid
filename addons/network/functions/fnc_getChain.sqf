@@ -7,6 +7,7 @@ private _chain = [];
 {
     private _data = [_x] call FUNC(radioData);
     private _freq = _data getVariable "frequencyTX";
+    if (_from == _x) then { continue };
     ("aid" callExtension ["mesh:get", [_from, _x, _freq]]) params ["_ret", "_code"];
     if (_code == 0) then {
         _ret = parseSimpleArray _ret;
@@ -14,7 +15,7 @@ private _chain = [];
             _chain = _ret;
         };
     } else {
-        if (_ret != "No path found") then {
+        if aid_debug then {
             WARNING_1("Failed to get chain: %1",_ret);
         };
     };
