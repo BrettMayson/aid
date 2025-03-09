@@ -67,20 +67,19 @@ while {diag_tickTime < _end} do {
     private _rxFreq = _rxData getVariable "frequencyRX";
     
     if (_rxFreq != _txFreq) then {
-        ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreqRx, 0, -992]]) params ["_ret", "_code"];
+        ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreq, 0, -992]]) params ["_ret", "_code"];
         if (_code != 0) then {
             WARNING_1("Failed to set signal strength: %1",_ret);
         };
         continue;
     };
 
-    private _txFreqRx = _txData getVariable "frequencyRX";
     private _txPower = _txData getVariable "power";
 
     private _rxSignal = 0;
 
-    ([_txFreqRx, _txPower, _rxRadio, _txRadio] call EFUNC(signal,getAcreSignal)) params ["_signal", "_db"];
-    ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreqRx, _signal, _db]]) params ["_ret", "_code"];
+    ([_txFreq, _txPower, _rxRadio, _txRadio] call EFUNC(signal,getAcreSignal)) params ["_signal", "_db"];
+    ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreq, _signal, _db]]) params ["_ret", "_code"];
     if (_code != 0) then {
         WARNING_1("Failed to set signal strength: %1",_ret);
     };
