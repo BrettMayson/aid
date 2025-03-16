@@ -65,12 +65,18 @@ while {diag_tickTime < _end} do {
         continue;
     };
     private _txFreq = _txData getVariable "frequencyTX";
+    if (isNil "_txFreq") then {
+        continue;
+    };
 
     private _rxData = [_rxRadio] call FUNC(radioData);
     if (isNil "_rxData") then {
         continue;
     };
     private _rxFreq = _rxData getVariable "frequencyRX";
+    if (isNil "_rxFreq") then {
+        continue;
+    };
     
     if (_rxFreq != _txFreq) then {
         ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreq, 0, -992]]) params ["_ret", "_code"];
