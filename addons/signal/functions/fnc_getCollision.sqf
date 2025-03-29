@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 
-params ["_f", "_start", "_end", ["_ig1", objNull], ["_ig2", objNull]];
+params ["_f", "_start", "_end"];
 
 private _disruptStrength = GVAR(baseDisruptStrength);
 private _hits = 0;
@@ -11,7 +11,7 @@ private _terrainDisrupt = 0.015 * _frequencyRatio;
 private _objectDisrupt = 0.005 * _frequencyRatio;
 
 while {true} do {
-    private _intersects = lineIntersectsSurfaces [_start, _end, _ig1, _ig2, true, 1];
+    private _intersects = lineIntersectsSurfaces [_start, _end, objNull, objNull, true, 1];
     if (count _intersects == 0) then {break};
     (_intersects select 0) params ["_pos", "_normal", "_obj"];
     // Ignore the first hit if it's too close to the start

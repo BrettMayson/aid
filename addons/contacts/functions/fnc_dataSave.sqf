@@ -8,8 +8,13 @@ private _radiosData = createHashMap;
 {
     private _radioData = createHashMap;
     _radioData set ["name", [_x] call acre_api_fnc_getDisplayName];
-    _radioData set ["channelNumber", [_x, "getCurrentChannel"] call acre_sys_data_fnc_dataEvent];
-    _radioData set ["channelDescription", [_x, "getChannelDescription"] call acre_sys_data_fnc_dataEvent];
+    private _channelNumber = [_x, "getCurrentChannel"] call acre_sys_data_fnc_dataEvent;
+    private _channelDescription = [_x, "getChannelDescription"] call acre_sys_data_fnc_dataEvent;
+    if (isNil "_channelNumber" || isNil "_channelDescription") exitWith {
+        continue;
+    };
+    _radioData set ["channelNumber", _channelNumber];
+    _radioData set ["channelDescription", _channelDescription];
     _radioData set ["chain", [_x] call EFUNC(network,getChain)];
     _radiosData set [_x, _radioData];
 } forEach _radios;

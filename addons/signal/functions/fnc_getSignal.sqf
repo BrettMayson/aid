@@ -39,7 +39,7 @@ private _Snd = abs ((_bottom - (_Lb max _bottom)) / _Sl);
 private _Px = 100 min (0 max (_Snd * 100));
 _Px = _Px / 100;
 
-private _collision = ([_f, _txPos, _rxPos] call FUNC(getCollision));
+private _collision = [_f, _txPos, _rxPos] call FUNC(getCollision);
 
 _Px = _Px * (1 - _collision);
 
