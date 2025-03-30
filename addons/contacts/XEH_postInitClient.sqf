@@ -10,6 +10,9 @@ GVAR(cooldown) = createHashMap;
     _radios pushBack _radio;
     GVAR(lastRadioOwner) set [_radio, _object];
     [QGVAR(discovered), [_object, _radios]] call CBA_fnc_localEvent;
+    if (aid_debug) then {
+        systemChat format ["Peer discovered: %1", _object];
+    };
 }] call CBA_fnc_addEventHandler;
 
 [QEGVAR(network,peerInRange), {
@@ -29,6 +32,9 @@ GVAR(cooldown) = createHashMap;
     private _radios = GVAR(contacts) getOrDefault [netId _object, [], true];
     _radios = _radios - [_radio];
     [QGVAR(lost), [_object, _radio, _radios]] call CBA_fnc_localEvent;
+    if (aid_debug) then {
+        systemChat format ["Peer lost: %1", _object];
+    };
 }] call CBA_fnc_addEventHandler;
 
 [{
