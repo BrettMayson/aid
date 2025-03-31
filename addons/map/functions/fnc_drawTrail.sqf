@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 
-params ["_object", "_trail"];
+params ["_trail"];
 
 {
     deleteMarkerLocal _x;

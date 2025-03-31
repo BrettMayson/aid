@@ -1,4 +1,4 @@
-#include "script_component.hpp"
+#include "..\script_component.hpp"
 
 private _start = diag_tickTime;
 private _end = _start + 0.002;
@@ -34,7 +34,7 @@ while {diag_tickTime < _end} do {
     if (GVAR(innerIndex) >= count GVAR(allRadios) || GVAR(outerIndex) >= count GVAR(allRadios)) then {
         GVAR(innerIndex) = 0;
         GVAR(outerIndex) = 0;
-        break;
+        continue;
     };
     private _txRadio = GVAR(allRadios) select GVAR(outerIndex);
     private _rxRadio = GVAR(allRadios) select GVAR(innerIndex);
@@ -45,23 +45,30 @@ while {diag_tickTime < _end} do {
     };
 
     private _txBase = _txRadio select [6,3];
+    private _rxBase = _rxRadio select [6,3];
     if (_txBase == "f88" || { _txBase == "rc3" }) then {
-        private _rxBase = _rxRadio select [6,3];
         if (_rxBase != _txBase) then {
+            continue;
+        };
+    } else {
+        if (_rxBase == "f88" || { _rxBase == "rc3" }) then {
             continue;
         };
     };
 
     if (isNil {acre_sys_data_radioData getVariable _txRadio}) then {
         GVAR(outerIndex) = GVAR(outerIndex) + 1;
+        ("aid" callExtension ["mesh:remove", [_txRadio]]);
         continue;
     };
     if (isNil {acre_sys_data_radioData getVariable _rxRadio}) then {
+        ("aid" callExtension ["mesh:remove", [_rxRadio]]);
         continue;
     };
 
     private _txData = [_txRadio] call FUNC(radioData);
     if (isNil "_txData") then {
+        ("aid" callExtension ["mesh:remove", [_txRadio]]);
         continue;
     };
     private _txFreq = _txData getVariable "frequencyTX";
@@ -71,6 +78,7 @@ while {diag_tickTime < _end} do {
 
     private _rxData = [_rxRadio] call FUNC(radioData);
     if (isNil "_rxData") then {
+        ("aid" callExtension ["mesh:remove", [_rxRadio]]);
         continue;
     };
     private _rxFreq = _rxData getVariable "frequencyRX";
@@ -87,8 +95,6 @@ while {diag_tickTime < _end} do {
     };
 
     private _txPower = _txData getVariable "power";
-
-    private _rxSignal = 0;
 
     ([_txFreq, _txPower, _rxRadio, _txRadio] call EFUNC(signal,getAcreSignal)) params ["_signal", "_db"];
     ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreq, _signal, _db]]) params ["_ret", "_code"];

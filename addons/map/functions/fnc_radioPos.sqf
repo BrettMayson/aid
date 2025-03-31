@@ -8,6 +8,6 @@ if (_object == ace_player) exitWith {
     getPosASL ace_player
 };
 
-private _data = [_object] call EFUNC(contacts,dataLoad);
+private _data = [netId _object] call EFUNC(contacts,dataLoad);
 
 _data getOrDefault ["posASL", [0,0,0]]

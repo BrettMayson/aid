@@ -1,41 +1,39 @@
 #include "script_component.hpp"
 
-GVAR(contacts) = createHashMap;
-GVAR(lastRadioOwner) = createHashMap;
-GVAR(cooldown) = createHashMap;
+GVAR(contactsLoopHandler) = createHashMap;
+GVAR(contactsNextCheck) = createHashMap;
 
-[QEGVAR(network,peerDiscovered), {
-    params ["_radio", "_object"];
-    private _radios = GVAR(contacts) getOrDefault [netId _object, [], true];
-    _radios pushBack _radio;
-    GVAR(lastRadioOwner) set [_radio, _object];
-    [QGVAR(discovered), [_object, _radios]] call CBA_fnc_localEvent;
-    if (aid_debug) then {
-        systemChat format ["Peer discovered: %1", _object];
+addMissionEventHandler ["ExtensionCallback", {
+    params ["_name", "_function", "_data"];
+    if (_name != "aid_contacts") exitWith {};
+    switch (_function) do {
+        case "added": {
+            if (aid_debug) then {
+                systemChat format ["Contact Added: %1", _data];
+            };
+            private _loopHandler = [{
+                (_this#0) params ["_id"];
+                private _object = objectFromNetId _id;
+                if (GVAR(contactsNextCheck) getOrDefault [_id, 0] > CBA_missionTime) exitWith {};
+                private _nextCheck = linearConversion [50, 2000, _object distance2D player, 0, 5];
+                GVAR(contactsNextCheck) set [_id, CBA_missionTime + _nextCheck];
+                private _data = [_object] call FUNC(dataSave);
+                [QGVAR(update), [_id, _data]] call CBA_fnc_localEvent;
+            }, 0.2, _data] call CBA_fnc_addPerFrameHandler;
+            GVAR(contactsLoopHandler) set [_data, _loopHandler];
+        };
+        case "removed": {
+            if (aid_debug) then {
+                systemChat format ["Contact Removed: %1", _data];
+            };
+            private _loopHandler = GVAR(contactsLoopHandler) get _data;
+            if (isNil "_loopHandler") exitWith {};
+            [_loopHandler] call CBA_fnc_removePerFrameHandler;
+            GVAR(contactsLoopHandler) set [_data, nil];
+            [QGVAR(lost), _data] call CBA_fnc_localEvent;
+        };
     };
-}] call CBA_fnc_addEventHandler;
-
-[QEGVAR(network,peerInRange), {
-    params ["_radio", "_object"];
-    private _cooldown = GVAR(cooldown) getOrDefault [_radio, 0];
-    if (_cooldown > CBA_missionTime) exitWith {};
-    GVAR(cooldown) set [_radio, CBA_missionTime + 0.2 + random 0.5];
-    private _radios = GVAR(contacts) getOrDefault [netId _object, [], true];
-    private _data = [_object, _radios] call FUNC(dataSave);
-    [QGVAR(inRange), [_object, _data, _radios]] call CBA_fnc_localEvent;
-}] call CBA_fnc_addEventHandler;
-
-[QEGVAR(network,peerLost), {
-    params ["_radio"];
-    private _object = GVAR(lastRadioOwner) getOrDefault [_radio, objNull];
-    if (isNull _object) exitWith {};
-    private _radios = GVAR(contacts) getOrDefault [netId _object, [], true];
-    _radios = _radios - [_radio];
-    [QGVAR(lost), [_object, _radio, _radios]] call CBA_fnc_localEvent;
-    if (aid_debug) then {
-        systemChat format ["Peer lost: %1", _object];
-    };
-}] call CBA_fnc_addEventHandler;
+}];
 
 [{
     if (alive acre_player) then {

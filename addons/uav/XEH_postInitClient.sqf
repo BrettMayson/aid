@@ -15,9 +15,9 @@ GVAR(ppResolution) = ppEffectCreate ["Resolution", 2012];
     };
 }] call CBA_fnc_addEventHandler;
 
-[[[], [4,7]], GVAR(maxRange), [], "Max Range", [false, true], [{}, {
-    params ["", "_itemCfg"];
-    getNumber (_itemCfg >> QGVAR(maxRange));
-}, {
-    getNumber (_itemCfg >> QGVAR(maxRange)) != 0
-}]] call ace_arsenal_fnc_addStat;
+// [[[], [4,7]], GVAR(maxRange), [], "Max Range", [false, true], [{}, {
+//     params ["", "_itemCfg"];
+//     getNumber (_itemCfg >> QGVAR(maxRange));
+// }, {
+//     getNumber (_itemCfg >> QGVAR(maxRange)) != 0
+// }]] call ace_arsenal_fnc_addStat;

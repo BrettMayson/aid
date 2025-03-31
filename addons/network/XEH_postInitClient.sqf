@@ -2,38 +2,76 @@
 
 if !(isMultiplayer) exitWith {};
 
-// Check if a different radio is in range each frame
-[{
-    call FUNC(tickRadioSignal);
-    call FUNC(tickDiscovery);
-}] call CBA_fnc_addPerFrameHandler;
+// Used by fnc_tickRadioSignal
+GVAR(outerIndex) = 0;
+GVAR(innerIndex) = 0;
+
+// Used by fnc_radioData
+GVAR(radioData) = createHashMap;
+
+"aid" callExtension ["mesh:clear", []];
+"aid" callExtension ["object:clear", []];
 
 [{
-    call FUNC(tickPeers);
-}, 0.1] call CBA_fnc_addPerFrameHandler;
+    call FUNC(tickRadioSignal);
+}] call CBA_fnc_addPerFrameHandler;
 
 [QGVAR(syncCount), {
     params ["_count"];
     if (count GVAR(allRadios) == _count) exitWith {};
-
+    if (aid_debug) then {
+        systemChat format ["syncCount: %1 vs %2", _count, count GVAR(allRadios)];
+    };
     [QGVAR(getRadios), player] call CBA_fnc_serverEvent;
 }] call CBA_fnc_addEventHandler;
 
 [QGVAR(syncRadios), {
     GVAR(allRadios) = _this;
+    if (aid_debug) then {
+        systemChat format ["syncRadios: %1", count GVAR(allRadios)];
+    };
 }] call CBA_fnc_addEventHandler;
 
 [QGVAR(addRadio), {
-    params ["_radio"];
+    params ["_radio", "_owner"];
     GVAR(allRadios) pushBackUnique _radio;
+    "aid" callExtension ["object:set", [_radio, _owner]];
+    if (aid_debug) then {
+        systemChat format ["addRadio: %1", _radio];
+    };
 }] call CBA_fnc_addEventHandler;
 
 [QGVAR(removeRadio), {
     params ["_radio"];
     GVAR(allRadios) = GVAR(allRadios) - [_radio];
+    "aid" callExtension ["mesh:remove", [_radio]];
+    "aid" callExtension ["object:remove", [_radio]];
+    if (aid_debug) then {
+        systemChat format ["removeRadio: %1", _radio];
+    };
 }] call CBA_fnc_addEventHandler;
 
-[FUNC(getAcreSignal)] call acre_api_fnc_setCustomSignalFunc;
+[QGVAR(ownerChange), {
+    params ["_radio", "_owner"];
+    "aid" callExtension ["object:set", [_radio, _owner]];
+    if (aid_debug) then {
+        systemChat format ["ownerChange: %1 @ |%2|", _radio, _owner];
+    };
+}] call CBA_fnc_addEventHandler;
+
+[{
+    if (acre_player != player) exitWith {};
+    private _radios = [];
+    {
+        private _data = [_x] call FUNC(radioData);
+        private _freq = _data getVariable "frequencyTX";
+        _radios pushBack [_x, _freq];
+    } forEach ([] call acre_api_fnc_getCurrentRadioList);
+    ("aid" callExtension ["player:set", [_radios]]) params ["_ret", "_code"];
+    if (_code != 0) then {
+        WARNING_2("Failed to set player radios (%2): %1",_ret,_code);
+    };
+}, 3] call CBA_fnc_addPerFrameHandler;
 
 cba_settings_allSettings = cba_settings_allSettings - [
     "acre_sys_signal_signalModel",

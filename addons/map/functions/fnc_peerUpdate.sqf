@@ -1,13 +1,13 @@
 #include "..\script_component.hpp"
 
-params ["_control", "_peerCtrl", "_object", "_inner"];
+params ["_control", "_peerCtrl", "_netId", "_inner"];
 
 GVAR(cursorOverInfoMarker) = _inner;
-private _peerData = [_object] call EFUNC(contacts,dataLoad);
+private _peerData = [_netId] call EFUNC(contacts,dataLoad);
 
 private _name = _peerData getOrDefault ["name", "Unknown"];
 if (aid_debug) then {
-    _name = format ["%1 (%2)", _name, netId _object];
+    _name = format ["%1 (%2)", _name, _netId];
 };
 (_peerCtrl controlsGroupCtrl IDC_PEER_NAME)
     ctrlSetText _name;
@@ -49,13 +49,14 @@ if ("radios" in _peerData) then {
     GVAR(lines) = [];
     _text = _text + "<br/>";
     {
+        diag_log format ["%1 = %2", _x, _y];
         if (count (_y get "chain") < 2) then {
             continue;
         };
         private _radio_id = _x;
         private _name = if aid_debug then { _x } else { _y get "name" };
         private _channel = _y get "channelDescription";
-        private _image = format ["<img size='0.7' image='%1'/>", [(_y get "chain") select 0] call FUNC(strengthIcon)];
+        private _image = format ["<img size='0.7' image='%1'/>", [_y get "strength"] call FUNC(strengthIcon)];
         private _color = [
             [1,0,0],
             [0,1,0],
@@ -69,13 +70,10 @@ if ("radios" in _peerData) then {
             "<br/>via <t color='%1'>%2</t> %3<br/>  %4",
             _color call BIS_fnc_colorRGBtoHTML,
             _name,
-            if aid_debug then { format ["%1 (%2)", _image, (_y get "chain") select 0] } else { _image },
+            if aid_debug then { format ["%1 (%2)", _image, _y get "strength"] } else { _image },
             _channel
         ];
-        if (count (_y get "chain") < 2) then {
-            continue;
-        };
-        private _chain = (_y get "chain") select 2;
+        private _chain = (_y get "chain");
         if (count _chain < 2) then {
             continue;
         };
@@ -142,5 +140,5 @@ _peerCtrl ctrlCommit 0;
 _peerCtrl ctrlShow true;
 
 if ("trail" in _peerData) then {
-    [_object, _peerData get "trail"] call FUNC(drawTrail);
+    [_peerData get "trail"] call FUNC(drawTrail);
 };

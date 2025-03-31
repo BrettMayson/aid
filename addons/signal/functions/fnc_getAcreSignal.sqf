@@ -15,4 +15,8 @@ if (_txAnt select 0 == "ACRE_643CM_VHF_TNC") then {
     _mW = 20000;
 };
 
+if (_txPos isEqualTo [0,0,0] || _rxPos isEqualTo [0,0,0]) exitWith {
+    [0, -992]
+};
+
 [_f, _mW, _rxPos, _txPos, _receiverClass] call FUNC(getSignal)

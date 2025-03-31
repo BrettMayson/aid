@@ -34,12 +34,12 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
     GVAR(cursorChecked) = true;
     private _close = [];
     {
-        private _object = _x;
+        private _netId = _x;
         {
             _x params ["_inner", "_outer"];
             private _dist = (_control ctrlMapWorldToScreen (getMarkerPos _inner)) distance2D getMousePosition;
             if (_dist <= 0.01) then {
-                _close pushBackUnique [_object, _inner, _outer];
+                _close pushBackUnique [_netId, _inner, _outer];
             };
         } forEach _y;
     } forEach GVAR(sources);
@@ -54,9 +54,9 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
             deleteMarkerLocal _x;
         } forEach GVAR(trailMarkers);
     };
-    (_close select 0) params ["_object", "_inner", "_outer"];
-    GVAR(peerShown) = [_object, _inner, _outer];
-    [_control, _peerCtrl, _object, _inner] call FUNC(peerUpdate);
+    (_close select 0) params ["_netId", "_inner", "_outer"];
+    GVAR(peerShown) = [_netId, _inner, _outer];
+    [_control, _peerCtrl, _netId, _inner] call FUNC(peerUpdate);
 }];
 
 _mapCtrl ctrlAddEventHandler ["Draw", {

@@ -1,22 +1,36 @@
 #include "..\script_component.hpp"
 
-params ["_object", "_radios"];
+params ["_object"];
 
 private _data = createHashMap;
+
+("aid" callExtension ["player:connections", [netId _object]]) params ["_ret", "_code"];
+if (_code != 0) exitWith {
+    if (aid_debug) then {
+        systemChat format ["player:connections: %1", _code];
+    };
+    _data
+};
+private _radios = parseSimpleArray _ret;
+// Vec<(Radio, (Frequency, Radio, (Strength, Vec<(Radio, Strength, f32)>)))>
 
 private _radiosData = createHashMap;
 {
     private _radioData = createHashMap;
-    _radioData set ["name", [_x] call acre_api_fnc_getDisplayName];
-    private _channelNumber = [_x, "getCurrentChannel"] call acre_sys_data_fnc_dataEvent;
-    private _channelDescription = [_x, "getChannelDescription"] call acre_sys_data_fnc_dataEvent;
+    _x params ["", "_info"];
+    _info params ["", "_radio", "_connections"];
+    _connections params ["_strength", "_chain"];
+    private _channelNumber = [_radio, "getCurrentChannel"] call acre_sys_data_fnc_dataEvent;
+    private _channelDescription = [_radio, "getChannelDescription"] call acre_sys_data_fnc_dataEvent;
     if (isNil "_channelNumber" || isNil "_channelDescription") exitWith {
         continue;
     };
+    _radioData set ["name", [_radio] call acre_api_fnc_getDisplayName];
     _radioData set ["channelNumber", _channelNumber];
     _radioData set ["channelDescription", _channelDescription];
-    _radioData set ["chain", [_x] call EFUNC(network,getChain)];
-    _radiosData set [_x, _radioData];
+    _radioData set ["strength", _strength];
+    _radioData set ["chain", _chain];
+    _radiosData set [_radio, _radioData];
 } forEach _radios;
 
 _data set ["radios", _radiosData];

@@ -33,12 +33,13 @@ FUNC(createMarker) = {
     [_inner, _outer]
 };
 
-[QEGVAR(contacts,inRange), {
-    params ["_object", "_data", "_radios"];
+[QEGVAR(contacts,update), {
+    params ["_id", "_data"];
+    private _object = objectFromNetId _id;
     private _gps = [_object, "gps"] call EFUNC(network,hasCapability);
     private _status = ["ColorGrey", "ColorWhite"] select _gps;
-    private _markers = GVAR(sources) getOrDefaultCall [netId _object, {
-        [[netId _object] call FUNC(createMarker)]
+    private _markers = GVAR(sources) getOrDefaultCall [_id, {
+        [[_id] call FUNC(createMarker)]
     }];
     {
         _x params ["_inner", "_outer"];
@@ -47,6 +48,9 @@ FUNC(createMarker) = {
             _outer setMarkerPosLocal (getPos _object);
             _inner setMarkerAlphaLocal 1;
             _outer setMarkerAlphaLocal 1;
+        } else {
+            _inner setMarkerAlphaLocal 0.6;
+            _outer setMarkerAlphaLocal 0.6;
         };
         _inner setMarkerColorLocal _status;
         _outer setMarkerColorLocal (_data getOrDefault ["color", "ColorGrey"]);
@@ -54,16 +58,17 @@ FUNC(createMarker) = {
 }] call CBA_fnc_addEventHandler;
 
 [QEGVAR(contacts,lost), {
-    params ["_object"];
-    if (acre_player distance _object < 40) then {
-        WARNING_2("Lost contact with %1 at range of only %2m",_object,round (acre_player distance _object));
+    params ["_id"];
+    private _object = objectFromNetId _id;
+    if (player distance _object < 40) then {
+        WARNING_2("Lost contact with %1 at range of only %2m",_object,round (player distance _object));
     };
-    private _markers = GVAR(sources) getOrDefault [netId _object, []];
+    private _markers = GVAR(sources) getOrDefault [_id, []];
     {
         _x params ["_inner", "_outer"];
         _inner setMarkerColorLocal "ColorBlack";
-        _inner setMarkerAlphaLocal INNER_SIZE;
-        _outer setMarkerAlphaLocal INNER_SIZE;
+        _inner setMarkerAlphaLocal 0.3;
+        _outer setMarkerAlphaLocal 0.3;
     } forEach _markers;
 }] call CBA_fnc_addEventHandler;
 
