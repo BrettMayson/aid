@@ -9,6 +9,8 @@ GVAR(innerIndex) = 0;
 // Used by fnc_radioData
 GVAR(radioData) = createHashMap;
 
+GVAR(allRadios) = [];
+
 "aid" callExtension ["mesh:clear", []];
 "aid" callExtension ["object:clear", []];
 

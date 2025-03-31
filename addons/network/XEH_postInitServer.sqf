@@ -8,19 +8,20 @@ if (!isMultiplayer) exitWith {};
 }] call CBA_fnc_addEventHandler;
 
 GVAR(owners) = createHashMap;
+GVAR(previousRadios) = [];
 
 [{
     private _radios = +acre_sys_server_masterIdList;
-    // Check for radios in allRadios that are not in the masterIdList
+    // Check for radios in previousRadios that are not in the masterIdList
     {
         if (!(_x in _radios)) then {
             [QGVAR(removeRadio), _x] call CBA_fnc_globalEvent;
             GVAR(owners) deleteAt _x;
         };
-    } forEach GVAR(allRadios);
-    // Check for radios in the masterIdList that are not in allRadios
+    } forEach GVAR(previousRadios);
+    // Check for radios in the masterIdList that are not in previousRadios
     {
-        if (!(_x in GVAR(allRadios))) then {
+        if (!(_x in GVAR(previousRadios))) then {
             private _owner = netId ([_x] call acre_sys_radio_fnc_getRadioObject);
             [QGVAR(addRadio), [_x, _owner]] call CBA_fnc_globalEvent;
             GVAR(owners) set [_x, _owner];
@@ -37,4 +38,5 @@ GVAR(owners) = createHashMap;
     [{
         [QGVAR(syncCount), _this] call CBA_fnc_globalEvent;
     }, count _radios, 1] call CBA_fnc_waitAndExecute;
-}, 3] call CBA_fnc_addPerFrameHandler;
+    GVAR(previousRadios) = _radios;
+}, 1] call CBA_fnc_addPerFrameHandler;
