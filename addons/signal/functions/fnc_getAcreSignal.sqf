@@ -3,6 +3,7 @@
 // TODO use vector add to add the height
 
 params ["_f", "_mW", "_receiverClass", "_transmitterClass"];
+
 private _rxAnt = ([_receiverClass] call acre_sys_components_fnc_findAntenna) select 0;
 private _rxPos = _rxAnt select 2;
 if (_rxAnt select 0 == "ACRE_643CM_VHF_TNC") then {
