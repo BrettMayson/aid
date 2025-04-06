@@ -171,6 +171,14 @@ pub fn process(ctx: &Context, networks: &Networks, from: Radio) -> Result<(), St
             }
             continue;
         };
+        if owner == "" {
+            println!("Empty owner, requesting owner");
+            if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
+                println!("Failed to send callback: {}", e);
+            } else {
+                println!("Requested owner for radio {}", from.0);
+            }
+        }
         let mut owner_contact = contacts.current.entry(owner).or_insert_with(HashMap::new);
         let info = network
             .read()

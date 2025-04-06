@@ -90,7 +90,7 @@ while {diag_tickTime < _end} do {
     if (isNil "_txFreq") then {
         ("aid" callExtension ["mesh:remove", [_txRadio]]);
         if (aid_trace) then {
-            systemChat format ["mesh:remove (no freq) %1", _txRadio];
+            systemChat format ["mesh:remove (no tx freq) %1", _txRadio];
         };
         continue;
     };
@@ -105,10 +105,6 @@ while {diag_tickTime < _end} do {
     };
     private _rxFreq = _rxData getVariable "frequencyRX";
     if (isNil "_rxFreq") then {
-        ("aid" callExtension ["mesh:remove", [_rxRadio]]);
-        if (aid_trace) then {
-            systemChat format ["mesh:remove (no freq) %1", _rxRadio];
-        };
         continue;
     };
     
