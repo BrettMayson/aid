@@ -164,6 +164,9 @@ pub fn process(ctx: &Context, networks: &Networks, from: Radio) -> Result<(), St
         };
         let Some(owner) = owners.get_owner(&from) else {
             println!("No owner found for radio {}", from.0);
+            if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
+                println!("Failed to send callback: {}", e);
+            }
             continue;
         };
         let mut owner_contact = contacts.current.entry(owner).or_insert_with(HashMap::new);
