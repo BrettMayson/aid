@@ -166,6 +166,8 @@ pub fn process(ctx: &Context, networks: &Networks, from: Radio) -> Result<(), St
             println!("No owner found for radio {}", from.0);
             if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
                 println!("Failed to send callback: {}", e);
+            } else {
+                println!("Requested owner for radio {}", from.0);
             }
             continue;
         };

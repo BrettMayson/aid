@@ -48,10 +48,16 @@ while {diag_tickTime < _end} do {
     private _rxBase = _rxRadio select [6,3];
     if (_txBase == "f88" || { _txBase == "rc3" }) then {
         if (_rxBase != _txBase) then {
+            if (aid_trace) then {
+                systemChat format ["%1 (%2) != %3 (%4)", _txRadio, _txBase, _rxRadio, _rxBase];
+            };
             continue;
         };
     } else {
         if (_rxBase == "f88" || { _rxBase == "rc3" }) then {
+            if (aid_trace) then {
+                systemChat format ["%1 (%2) != %3 (%4)", _txRadio, _txBase, _rxRadio, _rxBase];
+            };
             continue;
         };
     };
@@ -59,30 +65,50 @@ while {diag_tickTime < _end} do {
     if (isNil {acre_sys_data_radioData getVariable _txRadio}) then {
         GVAR(outerIndex) = GVAR(outerIndex) + 1;
         ("aid" callExtension ["mesh:remove", [_txRadio]]);
+        if (aid_trace) then {
+            systemChat format ["mesh:remove (not in radioData) %1", _txRadio];
+        };
         continue;
     };
     if (isNil {acre_sys_data_radioData getVariable _rxRadio}) then {
         ("aid" callExtension ["mesh:remove", [_rxRadio]]);
+        if (aid_trace) then {
+            systemChat format ["mesh:remove (not in radioData) %1", _rxRadio];
+        };
         continue;
     };
 
     private _txData = [_txRadio] call FUNC(radioData);
     if (isNil "_txData") then {
         ("aid" callExtension ["mesh:remove", [_txRadio]]);
+        if (aid_trace) then {
+            systemChat format ["mesh:remove (no data) %1", _txRadio];
+        };
         continue;
     };
     private _txFreq = _txData getVariable "frequencyTX";
     if (isNil "_txFreq") then {
+        ("aid" callExtension ["mesh:remove", [_txRadio]]);
+        if (aid_trace) then {
+            systemChat format ["mesh:remove (no freq) %1", _txRadio];
+        };
         continue;
     };
 
     private _rxData = [_rxRadio] call FUNC(radioData);
     if (isNil "_rxData") then {
         ("aid" callExtension ["mesh:remove", [_rxRadio]]);
+        if (aid_trace) then {
+            systemChat format ["mesh:remove (no data) %1", _rxRadio];
+        };
         continue;
     };
     private _rxFreq = _rxData getVariable "frequencyRX";
     if (isNil "_rxFreq") then {
+        ("aid" callExtension ["mesh:remove", [_rxRadio]]);
+        if (aid_trace) then {
+            systemChat format ["mesh:remove (no freq) %1", _rxRadio];
+        };
         continue;
     };
     
@@ -90,6 +116,9 @@ while {diag_tickTime < _end} do {
         ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreq, 0, -992]]) params ["_ret", "_code"];
         if (_code != 0) then {
             WARNING_1("Failed to set signal strength: %1",_ret);
+        };
+        if (aid_trace) then {
+            systemChat format ["mesh:set (freq mismatch) %1", _txRadio];
         };
         continue;
     };
@@ -100,6 +129,9 @@ while {diag_tickTime < _end} do {
     ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreq, _signal, _db]]) params ["_ret", "_code"];
     if (_code != 0) then {
         WARNING_1("Failed to set signal strength: %1",_ret);
+    };
+    if (aid_trace) then {
+        systemChat format ["mesh:set %1", _txRadio];
     };
 };
 

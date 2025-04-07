@@ -86,12 +86,20 @@ cba_settings_allSettings = cba_settings_allSettings - [
 addMissionEventHandler ["ExtensionCallback", {
     params ["_name", "_function", "_data"];
     if (_name != "aid_network") exitWith {};
+    if (aid_debug) then {
+        systemChat format ["aid_network: %1 %2 %3", _name, _function, _data];
+    };
     if (_function == "request_owner") exitWith {
-        private _radio = parseSimpleArray _data;
-        private _owner = [_radio] call acre_sys_radio_fnc_getRadioObject;
-        ("aid" callExtension ["object:set", [_radio, _owner]]) params ["_ret", "_code"];
+        private _owner = netId ([_data] call acre_sys_radio_fnc_getRadioObject);
+        ("aid" callExtension ["object:set", [_data, _owner]]) params ["_ret", "_code"];
         if (_code != 0) then {
             WARNING_2("Failed to set radio owner (%2): %1",_ret,_code);
+            if (aid_debug) then {
+                systemChat format ["aid_network: request_owner failed %1", _data];
+            };
+        };
+        if (aid_debug) then {
+            systemChat format ["request_owner: %1 @ |%2|", _data, _owner];
         };
     };
 }];

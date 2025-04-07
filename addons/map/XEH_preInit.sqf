@@ -4,8 +4,6 @@ ADDON = false;
 
 #include "\a3\ui_f\hpp\defineDIKCodes.inc"
 
-aid_debug = false;
-
 GVAR(peerDeleted) = false;
 
 [QUOTE(ADDON), "DeleteMarker", ["Delete Lost Contact", "Deletes a lost contact from the map"], {}, {
