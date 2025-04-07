@@ -23,7 +23,8 @@ GVAR(previousRadios) = [];
     {
         if (!(_x in GVAR(previousRadios))) then {
             private _owner = netId ([_x] call acre_sys_radio_fnc_getRadioObject);
-            if (isNil "_owner" || {isNull _owner}) then {
+            if (isNil "_owner") then {
+                diag_log format ["%1: No owner found for radio %2", QGVAR(addRadio), _x];
                 continue;
             };
             [QGVAR(addRadio), [_x, _owner]] call CBA_fnc_globalEvent;
@@ -33,7 +34,8 @@ GVAR(previousRadios) = [];
     // Check if a radio owner has changed
     {
         private _owner = netId ([_x] call acre_sys_radio_fnc_getRadioObject);
-        if (isNil "_owner" || {isNull _owner}) then {
+        if (isNil "_owner") then {
+            diag_log format ["%1: No owner found for radio %2", QGVAR(ownerChange), _x];
             continue;
         };
         if (GVAR(owners) getOrDefault [_x, ""] != _owner) then {
