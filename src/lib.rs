@@ -46,6 +46,11 @@ impl IntoArma for NetId {
         self.0.to_arma()
     }
 }
+impl PartialEq<&str> for NetId {
+    fn eq(&self, other: &&str) -> bool {
+        self.0 == *other
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Frequency(String);

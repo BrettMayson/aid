@@ -200,7 +200,7 @@ impl MeshNetwork {
 
                     // Apply the connection cost
                     let strength = strength.0;
-                    let hop_strength = if strength > 10 { strength - 10 } else { 0 };
+                    let hop_strength = strength.saturating_sub(10);
 
                     // Compute the minimum strength along the path
                     let new_strength = current_min_strength.min(hop_strength);
