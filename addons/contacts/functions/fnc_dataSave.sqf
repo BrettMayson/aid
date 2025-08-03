@@ -36,11 +36,15 @@ private _radiosData = createHashMap;
 _data set ["radios", _radiosData];
 
 if (_object isKindOf "Man") then {
-    private _name = name _object;
-    if (_name != "" && {(_object getVariable [QGVAR(name), ""]) == ""}) then {
+    private _name = if (alive _object) then {
+        name _object
+    } else {
+        _name = _object getVariable [QGVAR(name), "Unknown"];
+    };
+    if (_name != "" && _name != "Error: No unit" && {(_object getVariable [QGVAR(name), ""]) == ""}) then {
         _object setVariable [QGVAR(name), _name, true];
     } else {
-        _name = _object getVariable [QGVAR(name), ""];
+        _name = _object getVariable [QGVAR(name), "Unknown"];
     };
     _data set ["name", _name];
     if ([_object, "team"] call EFUNC(network,hasCapability)) then {

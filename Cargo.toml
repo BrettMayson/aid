@@ -1,6 +1,6 @@
 [package]
 name = "aid"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Brett Mayson"]
 edition = "2021"
 
@@ -9,5 +9,5 @@ crate-type = ["cdylib", "rlib"]
 name = "aid"
 
 [dependencies]
-arma-rs = { version = "1.11.10" }
+arma-rs = { version = "1.11.14" }
 dashmap = "6.1.0"

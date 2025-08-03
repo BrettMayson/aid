@@ -69,7 +69,7 @@ impl Contacts {
             if last.get(net_id).is_none() && *net_id != NetId::empty() {
                 println!("New contact: {} -> {:?}", net_id.0, connections);
                 if let Err(e) = ctx.callback_data("aid_contacts", "added", net_id.0.clone()) {
-                    println!("Failed to send callback: {}", e);
+                    println!("Failed to send callback: {e}");
                 }
             }
         }
@@ -77,7 +77,7 @@ impl Contacts {
             if !new_contacts.contains_key(net_id) && *net_id != NetId::empty() {
                 println!("Contact removed: {}", net_id.0);
                 if let Err(e) = ctx.callback_data("aid_contacts", "removed", net_id.0.clone()) {
-                    println!("Failed to send callback: {}", e);
+                    println!("Failed to send callback: {e}");
                 }
             }
         }
@@ -102,7 +102,7 @@ fn cmd_set(ctx: Context, radios: Vec<(Radio, Frequency)>) -> Result<(), String> 
     if *list.0.read().unwrap() == radios {
         return Ok(());
     }
-    println!("Set radios: {:?}", radios);
+    println!("Set radios: {radios:?}");
     let mut list = list.0.write().unwrap();
     let contacts = ctx.global().get::<Contacts>().unwrap_or_else(|| {
         println!("No contacts found, creating new one");
@@ -165,16 +165,16 @@ pub fn process(ctx: &Context, networks: &Networks, from: Radio) -> Result<(), St
         let Some(owner) = owners.get_owner(&from) else {
             println!("No owner found for radio {}", from.0);
             if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
-                println!("Failed to send callback: {}", e);
+                println!("Failed to send callback: {e}");
             } else {
                 println!("Requested owner for radio {}", from.0);
             }
             continue;
         };
-        if owner == "" {
+        if owner == NetId::empty() {
             println!("Empty owner, requesting owner");
             if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
-                println!("Failed to send callback: {}", e);
+                println!("Failed to send callback: {e}");
             } else {
                 println!("Requested owner for radio {}", from.0);
             }

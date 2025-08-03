@@ -79,7 +79,7 @@ fn cmd_get(
     let network = networks
         .networks
         .get(&freq)
-        .ok_or_else(|| format!("Frequency not found: `{:?}`", freq))?;
+        .ok_or_else(|| format!("Frequency not found: `{freq:?}`"))?;
     let network = network.read().expect("not poisoned");
     let (strength, path) = network
         .get_connection(&from, &to)
