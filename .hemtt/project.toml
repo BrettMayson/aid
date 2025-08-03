@@ -13,15 +13,10 @@ workshop = [
     "450814997", # CBA
     "751965892", # ACRE2
     "463939057", # ACE3
-    "1779063631", # Zeus Enhance
+    "1779063631", # Zeus Enhanced
+    "1623498241", # Enhanced Turrets
 ]
 mission = "2_riflemen.Stratis"
-
-[hemtt.launch.archipelago]
-extends = "default"
-workshop = [
-    "1726184748", # Archipelago
-]
 
 [hemtt.launch.profile]
 extends = "default"

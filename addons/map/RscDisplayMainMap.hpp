@@ -1,9 +1,6 @@
 class RscText;
 class RscStructuredText;
-class RscPicture;
-class RscFrame;
 class RscControlsGroupNoScrollbars;
-class ctrlStatic;
 
 class RscDisplayMainMap {
     class controls {

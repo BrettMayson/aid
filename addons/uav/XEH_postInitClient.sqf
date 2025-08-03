@@ -11,7 +11,7 @@ GVAR(ppResolution) = ppEffectCreate ["Resolution", 2012];
     };
     if ((!isNull _uav) && isNull GVAR(uav)) then {
         GVAR(uav) = _uav;
-        [{ call FUNC(uavPFH)}, 0.25] call CBA_fnc_addPerFrameHandler;
+        [{ call FUNC(signalPFH)}, 0.25] call CBA_fnc_addPerFrameHandler;
     };
 }] call CBA_fnc_addEventHandler;
 

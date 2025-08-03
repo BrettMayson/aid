@@ -6,7 +6,7 @@ class CfgPatches {
         units[] = {};
         weapons[] = {QGVAR(item)};
         requiredVersion = REQUIRED_VERSION;
-        requiredAddons[] = {"aid_main"};
+        requiredAddons[] = { "aid_main" };
         author = "AUTHOR";
         VERSION_CONFIG;
     };

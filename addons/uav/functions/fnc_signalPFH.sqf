@@ -43,5 +43,5 @@ if (GVAR(showSignal)) then {
 };
 if (_signal == 0) then {
     systemChat "Signal lost";
-    player remoteControl objNull;
+    ace_player remoteControl objNull;
 };
