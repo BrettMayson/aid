@@ -46,7 +46,7 @@ jobs:
         with:
           name: aid.zip
           path: ./
-      - run: unzip aid.zip -d ./unzipped
+      - run: unzip aid-latest.zip -d ./unzipped
       - uses: arma-actions/workshop-upload@v1
         with:
           itemId: "3228179079"
