@@ -22,6 +22,7 @@ _mapCtrl ctrlAddEventHandler ["MouseMoving", {
 
 _mapCtrl ctrlAddEventHandler ["Draw", {
     params ["_control"];
+    if (!GVAR(bft_enabled)) exitWith {};
     if (GVAR(cursorOverInfo)) exitWith {
         private _peerCtrl = (findDisplay 12) displayCtrl IDC_PEER;
         [_control, _peerCtrl, GVAR(peerShown)#0, GVAR(peerShown)#1] call FUNC(peerUpdate);
@@ -60,6 +61,7 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
 }];
 
 _mapCtrl ctrlAddEventHandler ["Draw", {
+    if (!GVAR(bft_enabled)) exitWith {};
     params ["_control"];
     {
         _x params ["_from", "_to", "_color"];

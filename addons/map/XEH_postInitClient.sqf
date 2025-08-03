@@ -35,6 +35,7 @@ FUNC(createMarker) = {
 
 [QEGVAR(contacts,update), {
     params ["_id", "_data"];
+    if (!GVAR(bft_enabled)) exitWith {};
     private _object = objectFromNetId _id;
     private _gps = [_object, "gps"] call EFUNC(network,hasCapability);
     private _status = ["ColorGrey", "ColorWhite"] select _gps;
@@ -59,6 +60,7 @@ FUNC(createMarker) = {
 
 [QEGVAR(contacts,lost), {
     params ["_id"];
+    if (!GVAR(bft_enabled)) exitWith {};
     private _object = objectFromNetId _id;
     if (player distance _object < 40) then {
         WARNING_2("Lost contact with %1 at range of only %2m",_object,round (player distance _object));
@@ -83,6 +85,8 @@ createMarkerLocal ["aid_player_inner", getPos player];
 "aid_player_inner" setMarkerColorLocal "ColorYellow";
 "aid_player_inner" setMarkerShadowLocal false;
 [{
+    // TODO: Don't run PFH if not enabled
+    if (GVAR(bft_enabled)) exitWith {};
     if !([acre_player, "gps"] call EFUNC(network,hasCapability)) exitWith {
         "aid_player_inner" setMarkerAlphaLocal 0;
         "aid_player_outer" setMarkerAlphaLocal 0;
@@ -98,6 +102,7 @@ createMarkerLocal ["aid_player_inner", getPos player];
 }, 0.1] call CBA_fnc_addPerFrameHandler;
 
 ["visibleMap", {
+    if (!GVAR(bft_enabled)) exitWith {};
     GVAR(cursorMoved) = diag_tickTime;
     GVAR(cursorChecked) = false;
 }, true] call CBA_fnc_addPlayerEventHandler;

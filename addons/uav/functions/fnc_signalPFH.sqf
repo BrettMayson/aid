@@ -9,39 +9,55 @@ if (isNull _uav) exitWith {
     GVAR(ppResolution) ppEffectEnable false;
 };
 
-if !(GVAR(pixelate)) then {
-    GVAR(ppResolution) ppEffectEnable false;
+private _freq = _uav getVariable [QGVAR(freq), 1300];
+private _power = _uav getVariable [QGVAR(power), 800];
+
+private _signal = if (GVAR(mode) == "SAT") then {
+    private _clarity = [ace_player] call FUNC(getSatError);
+    1 min (linearConversion [0, 4, _clarity, 1, 0, true] + random 0.05)
+} else {
+    private _distance = ace_player distance _uav;
+
+    if (_distance < 8) exitWith {
+        GVAR(ppResolution) ppEffectEnable false;
+        1
+    };
+
+    private _playerPos = getPosASL ace_player;
+    // Add a meter of height to the player, since the terrain is usually held at chest height
+    _playerPos set [2, (_playerPos select 2) + 1.4];
+
+    private _signal = ([_freq, _power, getPosASL _uav, _playerPos] call EFUNC(signal,getSignal)) select 0;
+    linearConversion [0,0.7,_signal,0,1,true]
 };
 
-// TODO define communication type, radio vs satcom
-
-private _distance = ace_player distance _uav;
-
-if (_distance < 8) exitWith {
-    GVAR(ppResolution) ppEffectEnable false;
-};
-
-private _playerPos = getPosASL ace_player;
-// Add a meter of height to the player, since the terrain is usually held at chest height
-_playerPos set [2, (_playerPos select 2) + 1.4];
-
-private _signal = ([GVAR(freq), GVAR(power), getPosASL _uav, _playerPos] call EFUNC(signal,getSignal)) select 0;
-_signal = linearConversion [0,0.7,_signal,0,1,true];
 private _effect = _signal ^ 0.4;
 private _disrupt = 1 - _effect;
 
-GVAR(ppResolution) ppEffectAdjust [1080 / (1 + (_disrupt * 4) + (1 - exp (-0.3 * (1 - _disrupt))))];
+private _maxRes = [_freq] call FUNC(maxRes);
+
+GVAR(ppResolution) ppEffectAdjust [_maxRes / (1 + (_disrupt * 4) + (1 - exp (-0.3 * (1 - _disrupt))))];
 GVAR(ppResolution) ppEffectCommit 0.15;
 GVAR(ppResolution) ppEffectEnable true;
 equipmentDisabled _uav params ["", "_ti"];
+GVAR(currentSignal) = _signal;
 private _desired = _signal < 0.5;
 if (_desired != _ti) then {
     _uav disableTIEquipment _desired;
 };
-if (GVAR(showSignal)) then {
-    systemChat format ["Signal: %1%%", round (_signal * 100)];
-};
 if (_signal == 0) then {
-    systemChat "Signal lost";
-    ace_player remoteControl objNull;
+    // Change the frequency to the lowest frequency
+    private _freqOptions = _uav getVariable [QGVAR(freqOptions), []];
+    private _currentFreq = _uav getVariable [QGVAR(freq), 1300];
+    private _lowestFreq = _freqOptions select 0;
+    if (_currentFreq != _lowestFreq) then {
+        _uav setVariable [QGVAR(freq), _lowestFreq, true];
+    } else {
+        ace_player remoteControl objNull;
+    };
+};
+
+if (GVAR(mode) == "LOS" && _uav getVariable [QGVAR(autoAdjust), false] && GVAR(nextSignalAdjust) < time) then {
+    GVAR(nextSignalAdjust) = time + 3;
+    [_uav, _signal] call FUNC(signalAdjust);
 };

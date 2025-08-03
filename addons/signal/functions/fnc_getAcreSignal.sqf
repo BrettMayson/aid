@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 
-// TODO use vector add to add the height
+// TODO use vectoradd to add the height
 
 params ["_f", "_mW", "_receiverClass", "_transmitterClass"];
 

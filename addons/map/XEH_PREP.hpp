@@ -1,5 +1,8 @@
 PREP(colorHex);
 
+PREP(displayFrequency);
+PREP(displayPower);
+
 PREP(initDisplayDiary);
 
 PREP(peerUpdate);

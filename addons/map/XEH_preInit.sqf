@@ -33,4 +33,14 @@ GVAR(peerDeleted) = false;
 GVAR(trailMarkers) = [];
 GVAR(lines) = [];
 
+[
+    QGVAR(bft_enabled),
+    "CHECKBOX",
+    "Friendly Tracking",
+    "AID - Map",
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+
 ADDON = true;

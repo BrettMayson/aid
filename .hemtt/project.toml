@@ -14,7 +14,6 @@ workshop = [
     "751965892", # ACRE2
     "463939057", # ACE3
     "1779063631", # Zeus Enhanced
-    "1623498241", # Enhanced Turrets
 ]
 mission = "2_riflemen.Stratis"
 
@@ -23,4 +22,10 @@ extends = "default"
 workshop = [
     "1652506957", # Arma Script Profiler
     "1645973522", # Intercept
+]
+
+[hemtt.launch.rf]
+extends = "default"
+dlc = [
+    "Reaction Forces",
 ]

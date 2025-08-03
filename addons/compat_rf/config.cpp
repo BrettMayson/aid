@@ -6,11 +6,11 @@ class CfgPatches {
         units[] = {};
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
-        requiredAddons[] = {};
+        requiredAddons[] = {"RF_Data_Loadorder", "aid_uav"};
+        skipWhenMissingDependencies = 1;
         author = "AUTHOR";
         VERSION_CONFIG;
     };
 };
 
-#include "CfgEventHandlers.hpp"
 #include "CfgVehicles.hpp"

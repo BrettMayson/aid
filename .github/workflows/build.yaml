@@ -36,3 +36,13 @@ jobs:
         with:
           name: aid.zip
           path: releases/aid-latest.zip
+
+      - run: unzip releases/aid-latest.zip -d ./unzipped
+      - uses: arma-actions/workshop-upload@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          itemId: "3228179079"
+          contentPath: "unzipped/@aid"
+        env:
+          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+          STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}

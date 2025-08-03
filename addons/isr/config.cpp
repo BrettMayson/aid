@@ -6,11 +6,14 @@ class CfgPatches {
         units[] = {};
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
-        requiredAddons[] = {};
-        author = "AUTHOR";
+        requiredAddons[] = {
+            "aid_main",
+            "ace_interaction"
+        };
         VERSION_CONFIG;
     };
 };
 
 #include "CfgEventHandlers.hpp"
 #include "CfgVehicles.hpp"
+#include "RscInGameUI.hpp"

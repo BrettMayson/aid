@@ -23,24 +23,4 @@ class CfgFunctions {
     };
 };
 
-class CfgVehicles {
-    class NonStrategic;
-    class Lightning_F: NonStrategic {
-        class EventHandlers {
-            init = "systemChat 'lightning struck!';";
-        };
-        class SimpleObject {
-            init = "systemChat 'lightning struck! (simple object)';";
-        };
-    };
-    class Lightning1_F: NonStrategic {
-        class EventHandlers {
-            init = "systemChat 'lightning struck!';";
-        };
-        class SimpleObject {
-            init = "systemChat 'lightning struck! (simple object)';";
-        };
-    };
-};
-
 #include "CfgEventHandlers.hpp"
