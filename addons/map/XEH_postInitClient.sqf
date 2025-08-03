@@ -86,7 +86,7 @@ createMarkerLocal ["aid_player_inner", getPos player];
 "aid_player_inner" setMarkerShadowLocal false;
 [{
     // TODO: Don't run PFH if not enabled
-    if (GVAR(bft_enabled)) exitWith {};
+    if !(GVAR(bft_enabled)) exitWith {};
     if !([acre_player, "gps"] call EFUNC(network,hasCapability)) exitWith {
         "aid_player_inner" setMarkerAlphaLocal 0;
         "aid_player_outer" setMarkerAlphaLocal 0;
