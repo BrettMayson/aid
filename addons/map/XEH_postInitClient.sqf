@@ -102,7 +102,7 @@ createMarkerLocal ["aid_player_inner", getPos player];
 }, 0.1] call CBA_fnc_addPerFrameHandler;
 
 ["visibleMap", {
-    if (!GVAR(bft_enabled)) exitWith {};
+    if !(GVAR(bft_enabled)) exitWith {};
     GVAR(cursorMoved) = diag_tickTime;
     GVAR(cursorChecked) = false;
 }, true] call CBA_fnc_addPlayerEventHandler;
