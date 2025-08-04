@@ -34,14 +34,14 @@ _fnc_options = {
 
 _fnc_draw = {
     private _options = call _fnc_options;
-    [
+    [[
         "POWER SETTINGS",
         format ["NEXT FREQ: %1", (_options select 0) call EFUNC(map,displayFrequency)],
         format ["PREV FREQ: %1", (_options select 1) call EFUNC(map,displayFrequency)],
         format ["NEXT POWER: %1", (_options select 2) call EFUNC(map,displayPower)],
         format ["PREV POWER: %1", (_options select 3) call EFUNC(map,displayPower)],
-        format ["AUTO ADJUST: %1", GVAR(vehicle) getVariable [QEGVAR(uav,autoAdjust), false]]
-    ] call FUNC(menu_draw);
+        format ["AUTO ADJUST: %1", ["OFF", "ON"] select (GVAR(vehicle) getVariable [QEGVAR(uav,autoAdjust), false])]
+    ]] call FUNC(menu_draw);
 };
 
 switch (_command) do {

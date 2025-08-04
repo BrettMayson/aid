@@ -19,7 +19,9 @@ GVAR(cameraChangedEH) = ["cameraView", {
             GVAR(vehicleFunction) = compile format ["_this call %1", _function];
             [_vehicle, "setup", []] call GVAR(vehicleFunction);
             GVAR(menuStack) = [];
+            GVAR(menuTargetOpen) = false;
+            _vehicle setVariable [QGVAR(markerChannels), DEFAULT_MARKER_CHANNELS, true];
         };
-        GVAR(pfh) = [FUNC(perFrameHandler)] call CBA_fnc_addPerFrameHandler;
+        GVAR(pfh) = [FUNC(pfh_main)] call CBA_fnc_addPerFrameHandler;
     };
 }, true] call CBA_fnc_addPlayerEventHandler;

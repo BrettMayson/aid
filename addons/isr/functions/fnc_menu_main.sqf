@@ -3,20 +3,34 @@
 params ["_command", "_arg"];
 
 _fnc_draw = {
-    [
+    [[
         "ISR MENU",
-        "CONFIGURATION"
-    ] call FUNC(menu_draw);
+        "CONFIGURATION",
+        "TARGETS",
+        "CAMERA"
+    ]] call FUNC(menu_draw);
 };
 
 switch (_command) do {
     case "open": {
         GVAR(menuStack) = [["main_menu", { _this call FUNC(menu_main) }, []]];
-        call _fnc_draw;
+        if (_arg == 0) then {
+            call _fnc_draw;
+        } else {
+            ["key", _arg, []] call FUNC(menu_main);
+        };
     };
     case "key": {
-        if (_arg == 1) then {
-            ["open", ""] call FUNC(menu_configuration);
+        switch (_arg) do {
+            case 1: {
+                ["open", "main_menu"] call FUNC(menu_configuration);
+            };
+            case 2: {
+                ["open", "main_menu"] call FUNC(menu_targets);
+            };
+            case 3: {
+                ["open", "main_menu"] call FUNC(menu_camera);
+            };
         };
     };
     case "return": {

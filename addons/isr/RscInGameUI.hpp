@@ -15,7 +15,7 @@ class RscInGameUI {
                     onLoad = "uiNamespace setVariable [""aid_isr_altControl"", _this#0];";
                     fade = 0;
                     idc = IDC_ALT;
-                    font = "EtelkaMonospacePro";
+                    font = ISR_FONT;
                     shadow = 0;
                 };
                 class CA_Speed: RscText {
@@ -25,13 +25,13 @@ class RscInGameUI {
                     onLoad = "uiNamespace setVariable [""aid_isr_speedControl"", _this#0];";
                     fade = 0;
                     idc = IDC_SPEED;
-                    font = "EtelkaMonospacePro";
+                    font = ISR_FONT;
                     shadow = 0;
                 };
                 class TextSpd;
                 class GVAR(TextSignal): TextSpd {
                     fade = 0;
-                    font = "EtelkaMonospacePro";
+                    font = ISR_FONT;
                     shadow = 0;
                     text = "SIGNAL:";
                     idc = IDC_SIGNAL_TEXT;

@@ -15,3 +15,12 @@ GVAR(nextSignalAdjust) = 0;
     1
 ] call CBA_fnc_addSetting;
 
+[
+    QGVAR(disableTISignal),
+    "SLIDER",
+    "TI Signal Threshold",
+    "AID - UAV",
+    [0,1,0.7,2,true],
+    1
+] call CBA_fnc_addSetting;
+

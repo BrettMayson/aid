@@ -3,6 +3,10 @@
 #include "..\main\script_macros.hpp"
 #include "\a3\ui_f\hpp\defineDIKCodes.inc"
 
+#define ISR_FONT "EtelkaMonospacePro"
+
+#define DEFAULT_MARKER_CHANNELS [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]
+
 #define IDC_SPEED 18400
 #define IDC_ALT 18401
 #define IDC_SIGNAL 18402

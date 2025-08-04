@@ -6,12 +6,13 @@ _fnc_draw = {
     private _menu = [
         "CONFIGURATION",
         format ["SPEED: %1", GVAR(speedCurrentMode)],
-        format ["ALTITUDE: %1", GVAR(altCurrentMode)]
+        format ["ALTITUDE: %1", GVAR(altCurrentMode)],
+        "MARKERS"
     ];
     if (GVAR(isUAV)) then {
         _menu pushBack "POWER SETTINGS";
     };
-    _menu call FUNC(menu_draw);
+    [_menu] call FUNC(menu_draw);
 };
 
 switch (_command) do {
@@ -41,7 +42,10 @@ switch (_command) do {
                 call _fnc_draw;
             };
             case 3: {
-                ["open", ""] call FUNC(menu_power);
+                ["open", "configuration"] call FUNC(menu_markers);
+            };
+            case 4: {
+                ["open", "configuration"] call FUNC(menu_power);
             };
         };
     };

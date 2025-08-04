@@ -32,3 +32,6 @@ if (_isUAV) then {
         (uiNamespace getVariable QGVAR(connPowerControl)) ctrlSetText "";
     };
 };
+
+[_vehicle] call FUNC(pfh_markers);
+[_vehicle] call FUNC(pfh_targets);

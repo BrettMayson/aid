@@ -2,8 +2,8 @@
 ADDON = false;
 #include "XEH_PREP.hpp"
 
-GVAR(iconCache) = createHashMap;
-GVAR(colorCache) = createHashMap;
+GVAR(markerIconCache) = createHashMap;
+GVAR(markerColorCache) = createHashMap;
 
 GVAR(menuStack) = [];
 
