@@ -17,10 +17,22 @@ GVAR(ppResolution) = ppEffectCreate ["Resolution", 2012];
         if !(_uav getVariable [QGVAR(init), false]) then {
             _uav setVariable [QGVAR(init), true, true];
             _uav setVariable [QGVAR(autoAdjust), true, true];
-            _uav setVariable [QGVAR(freq), getNumber (_config >> QGVAR(defaultFreq)), true];
-            _uav setVariable [QGVAR(power), getNumber (_config >> QGVAR(defaultPower)), true];
-            _uav setVariable [QGVAR(powerOptions), getArray (_config >> QGVAR(power)), true];
-            _uav setVariable [QGVAR(freqOptions), getArray (_config >> QGVAR(freq)), true];
+            private _defaultFreq = getNumber (_config >> QGVAR(defaultFreq));
+            if (_defaultFreq isNotEqualTo 0) then {
+                _uav setVariable [QGVAR(freq), _defaultFreq, true];
+            };
+            private _defaultPower = getNumber (_config >> QGVAR(defaultPower));
+            if (_defaultPower isNotEqualTo 0) then {
+            _uav setVariable [QGVAR(power), _defaultPower, true];
+            };
+            private _defaultFreqOptions = getArray (_config >> QGVAR(freq));
+            if (_defaultFreqOptions isNotEqualTo []) then {
+                _uav setVariable [QGVAR(freqOptions), _defaultFreqOptions, true];
+            };
+            private _defaultPowerOptions = getArray (_config >> QGVAR(power));
+            if (_defaultPowerOptions isNotEqualTo []) then {
+                _uav setVariable [QGVAR(powerOptions), _defaultPowerOptions, true];
+            };
         };
         GVAR(uav) = _uav;
         private _mode = getText (_config >> QGVAR(mode));
