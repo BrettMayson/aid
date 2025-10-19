@@ -31,9 +31,6 @@ _fnc_draw = {
         private _channel = _x select 1;
         _menu pushBack format ["%1: %2", _label, ["OFF", "ON"] select (_channels select _channel)];
     } forEach call _fnc_availableChannels;
-    if (GVAR(isUAV)) then {
-        _menu pushBack "POWER SETTINGS";
-    };
     [_menu] call FUNC(menu_draw);
 };
 

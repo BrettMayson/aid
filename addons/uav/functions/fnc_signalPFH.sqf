@@ -37,8 +37,6 @@ private _power = _uav getVariable [QGVAR(power), 800];
     ]
 }) params ["_signal", "_maxRes"];
 
-_maxRes = _maxRes * (0.3 max _signal);
-
 GVAR(ppResolution) ppEffectAdjust [_maxRes];
 GVAR(ppResolution) ppEffectCommit 0.15;
 GVAR(ppResolution) ppEffectEnable true;

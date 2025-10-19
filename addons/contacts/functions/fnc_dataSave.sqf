@@ -54,7 +54,7 @@ if (_object isKindOf "Man") then {
         };
     };
 } else {
-    _data set ["name", getText (configFile >> "CfgVehicles" >> typeOf _object >> "displayName")];
+    _data set ["name", getText (configOf _object >> "displayName")];
 };
 
 if ([_object, "gps"] call EFUNC(network,hasCapability)) then {
