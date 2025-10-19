@@ -12,7 +12,7 @@ private _targets = [];
 } forEach (getSensorTargets _vehicle);
 
 
-if (count (_vehicle isVehicleSensorEnabled "LaserSensorComponent") > 0) then {
+if ((_vehicle isVehicleSensorEnabled "LaserSensorComponent") isNotEqualTo []) then {
     // Display ACE laser codes
     {
         _x params ["_source"];

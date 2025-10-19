@@ -45,7 +45,7 @@ _mapCtrl ctrlAddEventHandler ["Draw", {
         } forEach _y;
     } forEach GVAR(sources);
     private _peerCtrl = (findDisplay 12) displayCtrl IDC_PEER;
-    if (count _close == 0) exitWith {
+    if (_close isEqualTo []) exitWith {
         GVAR(peerShown) = [];
         GVAR(cursorOverInfoMarker) = "";
         GVAR(cursorOverInfo) = false;
