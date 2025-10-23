@@ -103,7 +103,6 @@ fn cmd_remove(ctx: Context, radio: Radio) -> Result<(), String> {
             .expect("not poisoned")
             .remove_radio(radio.clone());
     }
-    crate::player::process(&ctx, networks, radio)?;
     Ok(())
 }
 

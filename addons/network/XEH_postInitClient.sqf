@@ -91,6 +91,9 @@ addMissionEventHandler ["ExtensionCallback", {
     };
     if (_function == "request_owner") exitWith {
         private _owner = netId ([_data] call acre_sys_radio_fnc_getRadioObject);
+        if (_owner isEqualTo "") exitWith {
+            ("aid" callExtension ["mesh:remove", [_data]]);
+        };
         ("aid" callExtension ["object:set", [_data, _owner]]) params ["_ret", "_code"];
         if (_code != 0) then {
             WARNING_2("Failed to set radio owner (%2): %1",_ret,_code);

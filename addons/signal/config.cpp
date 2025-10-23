@@ -17,7 +17,7 @@ class CfgFunctions {
         tag = "acre_sys_signal";
         class acre_sys_signal {
             class getSignalCore {
-                file = QPATHTOF(functions\fnc_getAcreSignal.sqf);
+                file = QPATHTOF(functions\fnc_getMeshedSignal.sqf);
             };
         };
     };

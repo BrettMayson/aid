@@ -23,12 +23,6 @@ workshop = [
     "3499977893", # ADT
 ]
 
-[hemtt.launch.rf]
-extends = "default"
-dlc = [
-    "Reaction Forces",
-]
-
 [hemtt.launch.profile]
 extends = "default"
 workshop = [

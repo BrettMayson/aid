@@ -20,10 +20,11 @@ if (_lastSeen != -1) then {
     if (_since < 0) then {
         _since = _since + 24;
     };
-    if (_since < 0.0016) then {
+        private _since_minutes  = _since * 60;
+    if (_since_minutes < 0.5) then {
         _text = _text + "Active";
     } else {
-        _text = _text + format ["Lost: %1 minutes ago", round (_since * 60)];
+        _text = _text + format ["Lost: %1 minutes ago", round (_since_minutes)];
     };
 };
 
@@ -86,7 +87,7 @@ if ("radios" in _peerData) then {
             if (_forEachIndex != (count _chain - 1)) then {
                 _text = _text + format [
                     "<br/>  + %1%2",
-                    name ([_radio] call acre_sys_radio_fnc_getRadioObject),
+                    ([_radio] call acre_sys_radio_fnc_getRadioObject) getVariable [QEGVAR(contacts,name), "Unknown"],
                     if aid_debug then { format [" (%1)", _radio] } else { "" }
                 ];
             };

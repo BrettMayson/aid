@@ -36,6 +36,13 @@ impl Contacts {
         }
     }
 
+    pub fn remove_radio(&self, radio: &Radio) {
+        for mut item in self.current.iter_mut() {
+            let connections = item.value_mut();
+            connections.retain(|_, (_, from, _)| from != radio);
+        }
+    }
+
     pub fn owner_switch(&self, radio: &Radio, net_id: &NetId) {
         for mut item in self.current.iter_mut() {
             if item.key() == net_id {

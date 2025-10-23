@@ -12,17 +12,23 @@ pub fn group() -> Group {
 }
 
 fn cmd_set(ctx: Context, radio: Radio, net_id: NetId) -> Result<(), String> {
+    println!("Set owner: {} -> {}", radio.0, net_id.0);
     let objects = ctx.global().get::<Objects>().unwrap_or_else(|| {
         println!("No objects found, creating new one");
         ctx.global().set(Objects::new());
         ctx.global().get::<Objects>().unwrap()
     });
-    println!("Set owner: {} -> {}", radio.0, net_id.0);
     let contacts = ctx.global().get::<Contacts>().unwrap_or_else(|| {
         println!("No contacts found, creating new one");
         ctx.global().set(Contacts::new());
         ctx.global().get::<Contacts>().unwrap()
     });
+    if net_id.0.is_empty() {
+        println!("Remove radio since new owner is empty: {}", radio.0);
+        objects.remove_radio(&radio);
+        contacts.remove_radio(&radio);
+        return Err("NetId cannot be empty".to_string());
+    }
     contacts.owner_switch(&radio, &net_id);
     objects.set_owner(radio, net_id);
     Ok(())
@@ -48,7 +54,7 @@ fn cmd_remove(ctx: Context, radio: Radio) -> Result<(), String> {
         ctx.global().get::<Objects>().unwrap()
     });
     println!("Remove radio: {}", radio.0);
-    objects.remove_radio(radio);
+    objects.remove_radio(&radio);
     Ok(())
 }
 
@@ -81,7 +87,7 @@ impl Objects {
         self.objects.get(radio).map(|v| v.clone())
     }
 
-    pub fn remove_radio(&self, radio: Radio) {
-        self.objects.remove(&radio);
+    pub fn remove_radio(&self, radio: &Radio) {
+        self.objects.remove(radio);
     }
 }

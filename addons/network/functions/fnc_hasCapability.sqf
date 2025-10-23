@@ -20,9 +20,9 @@ switch (_capability) do {
             private _containers = [_object];
             _containers append ((everyContainer _object) apply {_x select 1});
             {
-                _items = (getItemCargo _x) select 0;
+                _items append ((getItemCargo _x) select 0);
             } forEach _containers;
-            _gpsitems findIf {_x in _items} != -1
+            _gpsItems findIf {_x in _items} != -1
         }
     };
     case "team": {

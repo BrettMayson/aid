@@ -56,3 +56,9 @@ addMissionEventHandler ["ExtensionCallback", {
         } forEach units group player;
     };
 }, 1] call CBA_fnc_addPerFrameHandler;
+
+["ace_placedInBodyBag", {
+    params ["_unit", "_bodyBag"];
+    _bodyBag setVariable [QGVAR(name), name _unit, true];
+    _bodyBag setVariable [QGVAR(color), [_unit, false] call FUNC(color), true];
+}] call CBA_fnc_addEventHandler;

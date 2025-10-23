@@ -39,12 +39,10 @@ if (_object isKindOf "Man") then {
     private _name = if (alive _object) then {
         name _object
     } else {
-        _name = _object getVariable [QGVAR(name), "Unknown"];
+        _object getVariable [QGVAR(name), "Unknown"]
     };
-    if (_name != "" && _name != "Error: No unit" && {(_object getVariable [QGVAR(name), ""]) == ""}) then {
-        _object setVariable [QGVAR(name), _name, true];
-    } else {
-        _name = _object getVariable [QGVAR(name), "Unknown"];
+    if (_name != "" && _name != "Error: No unit") then {
+        _object setVariable [QGVAR(name), _name];
     };
     _data set ["name", _name];
     if ([_object, "team"] call EFUNC(network,hasCapability)) then {
@@ -54,7 +52,7 @@ if (_object isKindOf "Man") then {
         };
     };
 } else {
-    _data set ["name", getText (configOf _object >> "displayName")];
+    _data set ["name", _object getVariable [QGVAR(name), getText (configOf _object >> "displayName")]];
 };
 
 if ([_object, "gps"] call EFUNC(network,hasCapability)) then {

@@ -66,6 +66,14 @@ FUNC(createMarker) = {
         WARNING_2("Lost contact with %1 at range of only %2m",_object,round (player distance _object));
     };
     private _markers = GVAR(sources) getOrDefault [_id, []];
+    if (missionNamespace getVariable [QGVAR(autodelete), false]) exitWith {
+        {
+            _x params ["_inner", "_outer"];
+            deleteMarkerLocal _inner;
+            deleteMarkerLocal _outer;
+        } forEach _markers;
+        GVAR(sources) deleteAt _id;
+    };
     {
         _x params ["_inner", "_outer"];
         _inner setMarkerColorLocal "ColorBlack";
