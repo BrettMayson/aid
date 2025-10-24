@@ -7,8 +7,8 @@ private _hits = 0;
 
 // change the impact based on the frequency
 private _frequencyRatio = linearConversion [10, 20000, _f, 0.5, 20, true];
-private _terrainDisrupt = 0.015 * _frequencyRatio;
-private _objectDisrupt = 0.005 * _frequencyRatio;
+private _terrainDisrupt = 0.020 * _frequencyRatio;
+private _objectDisrupt = 0.010 * _frequencyRatio;
 
 while {true} do {
     private _intersects = lineIntersectsSurfaces [_start, _end, objNull, objNull, true, 1];
@@ -16,7 +16,7 @@ while {true} do {
     (_intersects select 0) params ["_pos", "_normal", "_obj"];
     // Ignore the first hit if it's too close to the start
     if (_hits == 0 && {_pos distance _start < 1}) then {
-        _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 3);
+        _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 2);
         _hits = 1;
     } else {
         if (isNull _obj) then { // terrain
@@ -26,7 +26,7 @@ while {true} do {
             _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 25);
         } else {
             _disruptStrength = _disruptStrength + _objectDisrupt;
-            _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 3);
+            _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 2);
         };
     };
     if (_pos distance _end < 15) then {break};
