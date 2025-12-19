@@ -2,6 +2,9 @@
 
 params ["_f", "_start", "_end"];
 
+if (_start isEqualTo []) exitWith { 1 };
+if (_end isEqualTo []) exitWith { 1 };
+
 private _disruptStrength = GVAR(baseDisruptStrength);
 private _hits = 0;
 
