@@ -36,15 +36,12 @@ private _locked = playerTargetLock select 0;
     _x params ["_obj", "_relationship"];
     private _pos = _obj modelToWorld getCenterOfMass _obj;
     if (worldToScreen _pos isEqualTo []) then { continue };
-    private _text = if (GVAR(menuTargetOpen)) then {
+    private _text = "";
+    if (GVAR(menuTargetOpen)) then {
         private _index = _selectable find _obj;
         if (_index != -1) then {
-            str (_index + 1)
-        } else {
-            ""
-        }
-    } else {
-        ""
+            _text = str (_index + 1);
+        };
     };
     private _icon = ["\a3\ui_f\data\IGUI\Cfg\Targeting\MarkedTargetLockable_ca.paa", "\a3\ui_f\data\IGUI\Cfg\Targeting\MarkedTargetFriendly_ca.paa"] select (_relationship == "friendly");
     if (_obj isEqualTo _locked) then {

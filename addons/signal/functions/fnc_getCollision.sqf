@@ -17,6 +17,7 @@ while {true} do {
     private _intersects = lineIntersectsSurfaces [_start, _end, objNull, objNull, true, 1];
     if (count _intersects == 0) then {break};
     (_intersects select 0) params ["_pos", "_normal", "_obj"];
+    if (_pos isEqualTo []) then {break};
     // Ignore the first hit if it's too close to the start
     if (_hits == 0 && {_pos distance _start < 1}) then {
         _pos = _pos vectorAdd (vectorNormalized (_start vectorFromTo _end) vectorMultiply 2);
