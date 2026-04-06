@@ -20,4 +20,4 @@ if (_txPos isEqualTo [0,0,0] || _rxPos isEqualTo [0,0,0]) exitWith {
     [0, -992]
 };
 
-[_f, _mW, _rxPos, _txPos, _receiverClass] call FUNC(getSignal)
+[_f, _mW, +_rxPos, +_txPos, _receiverClass] call FUNC(getSignal)

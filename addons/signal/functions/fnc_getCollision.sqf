@@ -14,6 +14,14 @@ private _terrainDisrupt = 0.020 * _frequencyRatio;
 private _objectDisrupt = 0.010 * _frequencyRatio;
 
 while {true} do {
+    if (_start isEqualTo []) then {
+        INFO_1(format ["%1: Invalid start position", _f]);
+        break
+    };
+    if (_end isEqualTo []) then {
+        INFO_1(format ["%1: Invalid end position", _f]);
+        break
+    };
     private _intersects = lineIntersectsSurfaces [_start, _end, objNull, objNull, true, 1];
     if (count _intersects == 0) then {break};
     (_intersects select 0) params ["_pos", "_normal", "_obj"];
