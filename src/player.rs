@@ -27,13 +27,16 @@ impl Contacts {
         }
     }
 
-    pub fn player_radios(&self, radios: &[(Radio, Frequency)]) {
+    pub fn player_radios(&self, radios: &[(Radio, Frequency)], ctx: &Context) -> Result<(), String> {
         for mut item in self.current.iter_mut() {
             let connections = item.value_mut();
             connections.retain(|(_, radio), (freq, _, _)| {
                 radios.iter().any(|(r, f)| r == radio && f == freq)
             });
         }
+        
+        // Apply changes to fire removal callbacks for contacts that lost all connections
+        self.apply_changes(ctx)
     }
 
     pub fn remove_radio(&self, radio: &Radio) {
@@ -117,7 +120,7 @@ fn cmd_set(ctx: Context, radios: Vec<(Radio, Frequency)>) -> Result<(), String> 
         ctx.global().get::<Contacts>().unwrap()
     });
     list.clear();
-    contacts.player_radios(&radios);
+    contacts.player_radios(&radios, &ctx)?;
     for (radio, freq) in radios {
         list.push((radio, freq));
     }
