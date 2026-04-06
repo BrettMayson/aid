@@ -12,11 +12,12 @@ pub fn group() -> Group {
 }
 
 pub type Connection = (Frequency, Radio, ConnectionInfo);
+pub type NetworkConnections = HashMap<(Radio, Radio), Connection>;
 
 pub struct RadioList(RwLock<Vec<(Radio, Frequency)>>);
 pub struct Contacts {
-    last: RwLock<HashMap<NetId, HashMap<(Radio, Radio), Connection>>>,
-    current: DashMap<NetId, HashMap<(Radio, Radio), Connection>>,
+    last: RwLock<HashMap<NetId, NetworkConnections>>,
+    current: DashMap<NetId, NetworkConnections>,
 }
 
 impl Contacts {
@@ -27,26 +28,31 @@ impl Contacts {
         }
     }
 
-    pub fn player_radios(&self, radios: &[(Radio, Frequency)], ctx: &Context) -> Result<(), String> {
+    pub fn player_radios(
+        &self,
+        radios: &[(Radio, Frequency)],
+        ctx: &Context,
+    ) -> Result<(), String> {
         for mut item in self.current.iter_mut() {
             let connections = item.value_mut();
             connections.retain(|(_, radio), (freq, _, _)| {
                 radios.iter().any(|(r, f)| r == radio && f == freq)
             });
         }
-        
+
         // Apply changes to fire removal callbacks for contacts that lost all connections
         self.apply_changes(ctx)
     }
 
-    pub fn remove_radio(&self, radio: &Radio) {
+    pub fn remove_radio(&self, radio: &Radio, ctx: &Context) -> Result<(), String> {
         for mut item in self.current.iter_mut() {
             let connections = item.value_mut();
             connections.retain(|_, (_, from, _)| from != radio);
         }
+        self.apply_changes(ctx)
     }
 
-    pub fn owner_switch(&self, radio: &Radio, net_id: &NetId) {
+    pub fn owner_switch(&self, radio: &Radio, net_id: &NetId, ctx: &Context) -> Result<(), String> {
         for mut item in self.current.iter_mut() {
             if item.key() == net_id {
                 continue;
@@ -54,6 +60,7 @@ impl Contacts {
             let connections = item.value_mut();
             connections.retain(|_, (_, from, _)| from != radio);
         }
+        self.apply_changes(ctx)
     }
 
     /// Save the current contacts to last
@@ -167,29 +174,35 @@ pub fn process(ctx: &Context, networks: &Networks, from: Radio) -> Result<(), St
         ctx.global().set(Objects::new());
         ctx.global().get::<Objects>().unwrap()
     });
+
+    let Some(owner) = owners.get_owner(&from) else {
+        println!("No owner found for radio {}", from.0);
+        if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
+            println!("Failed to send callback: {e}");
+        } else {
+            println!("Requested owner for radio {}", from.0);
+        }
+        return Ok(());
+    };
+    if owner == NetId::empty() {
+        println!("Empty owner, requesting owner");
+        if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
+            println!("Failed to send callback: {e}");
+        } else {
+            println!("Requested owner for radio {}", from.0);
+        }
+        return Ok(());
+    }
+
     for (radio, freq) in list.iter() {
         let Some(network) = networks.get(freq) else {
             println!("No network found for frequency {}", freq.0);
             continue;
         };
-        let Some(owner) = owners.get_owner(&from) else {
-            println!("No owner found for radio {}", from.0);
-            if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
-                println!("Failed to send callback: {e}");
-            } else {
-                println!("Requested owner for radio {}", from.0);
-            }
-            continue;
-        };
-        if owner == NetId::empty() {
-            println!("Empty owner, requesting owner");
-            if let Err(e) = ctx.callback_data("aid_network", "request_owner", from.0.clone()) {
-                println!("Failed to send callback: {e}");
-            } else {
-                println!("Requested owner for radio {}", from.0);
-            }
-        }
-        let mut owner_contact = contacts.current.entry(owner).or_insert_with(HashMap::new);
+        let mut owner_contact = contacts
+            .current
+            .entry(owner.clone())
+            .or_insert_with(HashMap::new);
         let info = network
             .read()
             .expect("not poisoned")

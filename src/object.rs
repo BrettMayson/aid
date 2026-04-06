@@ -26,10 +26,10 @@ fn cmd_set(ctx: Context, radio: Radio, net_id: NetId) -> Result<(), String> {
     if net_id.0.is_empty() {
         println!("Remove radio since new owner is empty: {}", radio.0);
         objects.remove_radio(&radio);
-        contacts.remove_radio(&radio);
+        contacts.remove_radio(&radio, &ctx)?;
         return Err("NetId cannot be empty".to_string());
     }
-    contacts.owner_switch(&radio, &net_id);
+    contacts.owner_switch(&radio, &net_id, &ctx)?;
     objects.set_owner(radio, net_id);
     Ok(())
 }
@@ -53,8 +53,14 @@ fn cmd_remove(ctx: Context, radio: Radio) -> Result<(), String> {
         ctx.global().set(Objects::new());
         ctx.global().get::<Objects>().unwrap()
     });
+    let contacts = ctx.global().get::<Contacts>().unwrap_or_else(|| {
+        println!("No contacts found, creating new one");
+        ctx.global().set(Contacts::new());
+        ctx.global().get::<Contacts>().unwrap()
+    });
     println!("Remove radio: {}", radio.0);
     objects.remove_radio(&radio);
+    contacts.remove_radio(&radio, &ctx)?;
     Ok(())
 }
 
