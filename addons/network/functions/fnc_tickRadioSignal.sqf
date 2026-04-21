@@ -121,8 +121,12 @@ while {diag_tickTime < _end} do {
 
     private _txPower = _txData getVariable "power";
 
-    ([_txFreq, _txPower, _rxRadio, _txRadio] call EFUNC(signal,getAcreSignal)) params ["_signal", "_db"];
-    ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreq, _signal, _db]]) params ["_ret", "_code"];
+    ([_txFreq, _txPower, _rxRadio, _txRadio] call EFUNC(signal,getAcreSignal)) params ["_Px", "_db"];
+    private _noiseFloor = -100;
+    // TODO use radio values instead of hardcoded values for loss calculation
+    private _snr = _db - _noiseFloor;
+    private _signal = 1 min (0 max (_snr / 30));
+    ("aid" callExtension ["mesh:set", [_txRadio, _rxRadio, _txFreq, abs _signal, _db]]) params ["_ret", "_code"];
     if (_code != 0) then {
         WARNING_1("Failed to set signal strength: %1",_ret);
     };

@@ -50,7 +50,6 @@ if ("radios" in _peerData) then {
     GVAR(lines) = [];
     _text = _text + "<br/>";
     {
-        diag_log format ["%1 = %2", _x, _y];
         if (count (_y get "chain") < 2) then {
             continue;
         };
