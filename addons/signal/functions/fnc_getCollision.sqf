@@ -2,8 +2,8 @@
 
 params ["_f", "_start", "_end"];
 
-if (_start isEqualTo [] || !(_start isEqualType [])) exitWith { 999 };
-if (_end isEqualTo [] || !(_end isEqualType [])) exitWith { 999 };
+if (!(_start isEqualType []) || {count _start != 3}) exitWith { 999 };
+if (!(_end isEqualType []) || {count _end != 3}) exitWith { 999 };
 
 private _lossDb = 0;
 private _hits = 0;
@@ -13,10 +13,14 @@ private _dir = vectorNormalized (_start vectorFromTo _end);
 // Frequency scaling
 private _frequencyRatio = linearConversion [10, 20000, _f, 0.5, 20, true];
 
-private _terrainLossPerHit = 10 * _frequencyRatio;
-private _objectLossPerHit  = 2 * _frequencyRatio;
+private _terrainLossPerHit = 2.4 * _frequencyRatio;
+private _objectLossPerHit  = 1.2 * _frequencyRatio;
 
 while {true} do {
+    if (!_start isEqualType [] || {count _start != 3}) then {
+        INFO_1(format ["%1: Invalid start position", _f]);
+        break
+    };
     private _intersects = lineIntersectsSurfaces [
         _start,
         _end,
@@ -33,30 +37,27 @@ while {true} do {
     // Skip immediate self-hit
     if (_hits == 0 && {_pos distance _start < 1}) then {
         _pos = _pos vectorAdd (_dir vectorMultiply 2);
+        _hits = 1;
     } else {
         if (isNull _obj) then {
             private _depth = (getTerrainHeightASL _pos) - (_pos select 2);
             private _impact = linearConversion [0, 50, _depth, 1, 5, true];
             _lossDb = _lossDb + (_terrainLossPerHit * _impact);
-            _pos = _pos vectorAdd (_dir vectorMultiply 10);
+            _pos = _pos vectorAdd (_dir vectorMultiply 25);
         } else {
             _lossDb = _lossDb + _objectLossPerHit;
-            _pos = _pos vectorAdd (_dir vectorMultiply 4);
+            _pos = _pos vectorAdd (_dir vectorMultiply 2);
         };
     };
 
     if (_pos distance _end < 5) exitWith {};
     if (_lossDb >= 120) exitWith {};
 
-    if (!(_pos isEqualType []) || _pos isEqualTo []) exitWith {};
-
-    _hits = _hits + 1;
-
     _start = _pos;
 };
 
 // Rain attenuation (frequency scaled, capped)
-private _rainLoss = ((rain * rain) * (_frequencyRatio * 2)) min 8;
+private _rainLoss = (linearConversion [100, 3000, _start distance _end, 0, 1, true] * ((rain / 10) * _frequencyRatio));
 _lossDb = _lossDb + _rainLoss;
 
 _lossDb
