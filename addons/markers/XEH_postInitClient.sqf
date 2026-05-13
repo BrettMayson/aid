@@ -26,7 +26,7 @@ GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId}
     params ["_newMarker"];
     // Only track user-defined markers
     if !("_USER_DEFINED #" in _newMarker) exitWith {
-        if (QOUTE(ADDON) in _newMarker) then {
+        if (QUOTE(ADDON) in _newMarker) then {
             GVAR(tracking) pushBackUnique _newMarker;
         };
     };
