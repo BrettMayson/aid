@@ -30,8 +30,9 @@ if (_deltaTimestamp != -1 && _currentTimestamp != -1 && _deltaTimestamp < _curre
 if !(_id in allMapMarkers) then {
     // Only create non-deletion markers
     if !(_delta getOrDefault ["deleted", false]) then {
+        private _pos = _delta getOrDefault ["pos", [0, 0, 0]];
         // Create with default properties, will be updated by delta
-        createMarkerLocal [_id, _delta getOrDefault ["pos", [0, 0, 0]], 0];
+        createMarkerLocal [_id, _pos, 0];
     };
 };
 

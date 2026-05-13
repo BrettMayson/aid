@@ -4,10 +4,13 @@ if !(isMultiplayer) exitWith {};
 
 GVAR(tracking) = [];
 GVAR(markers) = createHashMap;  // marker id → {state, timestamp}
-GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId} for deduplication
+
+// Markers sync through contact system only (respects radio range)
+// The contacts addon handles receiving marker deltas via markerDeltas array
 
 ["created", {
     params ["_newMarker"];
+    
     // Only track user-defined markers
     if !("_USER_DEFINED #" in _newMarker) exitWith {
         if (QUOTE(ADDON) in _newMarker) then {
@@ -16,6 +19,7 @@ GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId}
     };
 
     private _machine = ((_newMarker select [15,10]) splitString "/") select 0;
+    
     // Don't track markers created by other machines
     if (_machine != getPlayerID player) exitWith {
         deleteMarkerLocal _newMarker;
@@ -32,17 +36,25 @@ GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId}
     _state set ["createdBy", name ace_player];
     _state set ["createdAt", _now];
     
-    // Set source_netId so fnc_dataSave can find this marker and include it in contact updates
+    // Set source_netId so markers can be identified by origin
     private _myMachineId = parseNumber (((netId player) splitString ":") select 0);
     _state set ["source_netId", _myMachineId];
     
     GVAR(markers) set [_id, _state];
     
-    // Delete original marker and replace with tracked one
+    // Delete original marker
     deleteMarkerLocal _newMarker;
+    
+    // Create new marker with tracked ID
+    createMarkerLocal [_id, _state getOrDefault ["pos", [0,0,0]], 0];
+    
+    // Apply all properties to the new marker
     [_id, _state, _state] call FUNC(apply);
     
-    // Broadcast marker creation to server
+    // Replicate marker data to player object so contacts can query it
+    ace_player setVariable [QGVAR(markerData), GVAR(markers), true];
+    
+    // Broadcast marker creation to server for persistence
     [QGVAR(updated), [_id, _state, _now, clientOwner]] call CBA_fnc_serverEvent;
 }] call CBA_fnc_addMarkerEventHandler;
 
@@ -91,6 +103,9 @@ GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId}
             GVAR(markers) set [_id, _markerState];
         };
     } forEach GVAR(tracking);
+    
+    // Replicate marker data to player object so contacts can query it
+    player setVariable [QGVAR(markerData), GVAR(markers), true];
 }, 1, []] call CBA_fnc_addPerFrameHandler;
 
 // Initialize marker hover on map display

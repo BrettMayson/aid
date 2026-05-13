@@ -65,27 +65,32 @@ if ([_object, "gps"] call EFUNC(network,hasCapability)) then {
 _data set ["id", netId _object];
 _data set ["lastSeen", dayTime];
 
-// Collect marker deltas if markers addon is available
+// Collect marker deltas from contact's replicated data
+// Only include markers that are newer than what we have locally
 private _markerDeltas = [];
-private _allMarkers = missionNamespace getVariable [QEGVAR(markers,markers), createHashMap];
-if (count _allMarkers > 0) then {
-    private _contactNetId = parseNumber (((netId _object) splitString ":") select 0);
+private _remoteMarkerData = _object getVariable [QEGVAR(markers,markerData), createHashMap];
+private _localMarkers = missionNamespace getVariable [QEGVAR(markers,markers), createHashMap];
+
+if (count _remoteMarkerData > 0) then {
     {
         private _markerId = _x;
-        private _markerState = _allMarkers get _markerId;
+        private _remoteState = _remoteMarkerData get _markerId;
+        private _localState = _localMarkers getOrDefault [_markerId, createHashMap];
         
-        // Only include markers originating from this contact
-        if ((_markerState getOrDefault ["source_netId", -1]) == _contactNetId) then {
-            if (count _markerState > 0) then {
-                private _delta = createHashMap;
-                {
-                    _delta set [_x, _markerState get _x];
-                } forEach (keys _markerState);
-                _delta set ["id", _markerId];
-                _markerDeltas pushBack _delta;
-            };
+        // Only include if remote has it and either we don't or theirs is newer
+        private _remoteTimestamp = _remoteState getOrDefault ["timestamp", -1];
+        private _localTimestamp = _localState getOrDefault ["timestamp", -1];
+        
+        if (_remoteTimestamp > _localTimestamp) then {
+            // Build delta with all properties from remote state
+            private _delta = createHashMap;
+            {
+                _delta set [_x, _remoteState get _x];
+            } forEach (keys _remoteState);
+            _delta set ["id", _markerId];
+            _markerDeltas pushBack _delta;
         };
-    } forEach (keys _allMarkers);
+    } forEach (keys _remoteMarkerData);
 };
 
 if (_markerDeltas isNotEqualTo []) then {
