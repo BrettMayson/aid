@@ -29,7 +29,9 @@ GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId}
 
     private _machine = ((_newMarker select [15,10]) splitString "/") select 0;
     // Don't track markers created by other machines
-    if (_machine != getPlayerID player) exitWith {};
+    if (_machine != getPlayerID player) exitWith {
+        deleteMarkerLocal _newMarker;
+    };
     
     // Generate tracking ID
     private _id = call FUNC(nextId);

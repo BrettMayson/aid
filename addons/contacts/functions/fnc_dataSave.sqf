@@ -70,7 +70,7 @@ private _markerDeltas = [];
 private _remoteMarkers = missionNamespace getVariable [QEGVAR(markers,remoteMarkers), createHashMap];
 private _allMarkers = missionNamespace getVariable [QEGVAR(markers,markers), createHashMap];
 if (count _remoteMarkers > 0) then {
-    private _contactNetId = netId _object;
+    private _contactNetId = ((netId _object) splitString ":") select 0;
     {
         private _markerId = _x;
         private _markerData = _remoteMarkers get _markerId;
