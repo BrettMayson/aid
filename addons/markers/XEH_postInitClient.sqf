@@ -25,7 +25,11 @@ GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId}
 ["created", {
     params ["_newMarker"];
     // Only track user-defined markers
-    if !("_USER_DEFINED #" in _newMarker) exitWith {};
+    if !("_USER_DEFINED #" in _newMarker) exitWith {
+        if (QOUTE(ADDON) in _newMarker) then {
+            GVAR(tracking) pushBackUnique _newMarker;
+        };
+    };
 
     private _machine = ((_newMarker select [15,10]) splitString "/") select 0;
     // Don't track markers created by other machines
