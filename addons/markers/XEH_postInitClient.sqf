@@ -96,7 +96,10 @@ GVAR(markers) = createHashMap;  // marker id → {state, timestamp}
             _currentDelta set ["editedAt", _now];
             [QGVAR(updated), [_id, _currentDelta, _now, clientOwner]] call CBA_fnc_serverEvent;
             
-            // Update local timestamp and editor info
+            // Update local state with the changed properties
+            {
+                _markerState set [_x, _currentDelta get _x];
+            } forEach (keys _currentDelta);
             _markerState set ["timestamp", _now];
             _markerState set ["editedBy", name ace_player];
             _markerState set ["editedAt", _now];
