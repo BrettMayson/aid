@@ -62,3 +62,19 @@ addMissionEventHandler ["ExtensionCallback", {
     _bodyBag setVariable [QGVAR(name), name _unit, true];
     _bodyBag setVariable [QGVAR(color), [_unit, false] call FUNC(color), true];
 }] call CBA_fnc_addEventHandler;
+
+// Process marker deltas from contacts
+[QGVAR(update), {
+    params ["_id", "_data"];
+    
+    // If markers addon is available and contact has marker deltas
+    private _applyRemoteMarker = missionNamespace getVariable [QEFUNC(markers,applyRemoteMarker), nil];
+    if (!isNil "_applyRemoteMarker" && ((_data getOrDefault ["markerDeltas", []]) isNotEqualTo [])) then {
+        private _markerDeltas = _data get "markerDeltas";
+        {
+            private _markerDelta = _x;
+            private _markerId = _markerDelta get "id";
+            [_markerId, _markerDelta] call _applyRemoteMarker;
+        } forEach _markerDeltas;
+    };
+}] call CBA_fnc_addEventHandler;

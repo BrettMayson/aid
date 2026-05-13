@@ -65,6 +65,36 @@ if ([_object, "gps"] call EFUNC(network,hasCapability)) then {
 _data set ["id", netId _object];
 _data set ["lastSeen", dayTime];
 
+// Collect marker deltas if markers addon is available
+private _markerDeltas = [];
+private _remoteMarkers = missionNamespace getVariable [QEGVAR(markers,remoteMarkers), createHashMap];
+private _allMarkers = missionNamespace getVariable [QEGVAR(markers,markers), createHashMap];
+if (count _remoteMarkers > 0) then {
+    private _contactNetId = netId _object;
+    {
+        private _markerId = _x;
+        private _markerData = _remoteMarkers get _markerId;
+        
+        // Only include markers from this contact
+        if ((_markerData getOrDefault ["source_netId", -1]) == _contactNetId) then {
+            // Get the full delta if available
+            private _markerState = _allMarkers getOrDefault [_markerId, createHashMap];
+            if (count _markerState > 0) then {
+                private _delta = createHashMap;
+                {
+                    _delta set [_x, _markerState get _x];
+                } forEach (keys _markerState);
+                _delta set ["id", _markerId];
+                _markerDeltas pushBack _delta;
+            };
+        };
+    } forEach (keys _remoteMarkers);
+};
+
+if (_markerDeltas isNotEqualTo []) then {
+    _data set ["markerDeltas", _markerDeltas];
+};
+
 GVAR(contactData) set [netId _object, _data];
 
 _data
