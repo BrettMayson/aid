@@ -6,22 +6,6 @@ GVAR(tracking) = [];
 GVAR(markers) = createHashMap;  // marker id → {state, timestamp}
 GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId} for deduplication
 
-// Listen for remote marker updates from server
-[QGVAR(remoteUpdate), {
-    params ["_id", "_delta", "_timestamp"];
-    
-    // Avoid applying same delta twice
-    private _remote = GVAR(remoteMarkers) getOrDefault [_id, createHashMap];
-    if (_timestamp == (_remote getOrDefault ["timestamp", -1])) exitWith {};
-    
-    // Apply remote marker delta
-    if ([_id, _delta] call FUNC(applyRemoteMarker)) then {
-        _remote set ["timestamp", _timestamp];
-        _remote set ["source_netId", clientOwner];
-        GVAR(remoteMarkers) set [_id, _remote];
-    };
-}] call CBA_fnc_addEventHandler;
-
 ["created", {
     params ["_newMarker"];
     // Only track user-defined markers
@@ -47,6 +31,11 @@ GVAR(remoteMarkers) = createHashMap;  // marker id → {timestamp, source_netId}
     _state set ["timestamp", _now];
     _state set ["createdBy", name ace_player];
     _state set ["createdAt", _now];
+    
+    // Set source_netId so fnc_dataSave can find this marker and include it in contact updates
+    private _myMachineId = parseNumber (((netId player) splitString ":") select 0);
+    _state set ["source_netId", _myMachineId];
+    
     GVAR(markers) set [_id, _state];
     
     // Delete original marker and replace with tracked one

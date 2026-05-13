@@ -42,8 +42,5 @@ GVAR(data) = createHashMap;
         };
         
         GVAR(data) set [_id, _markerData];
-        
-        // Broadcast to all clients
-        [QGVAR(remoteUpdate), [_id, _delta, _timestamp]] call CBA_fnc_globalEvent;
     };
 }] call CBA_fnc_addEventHandler;

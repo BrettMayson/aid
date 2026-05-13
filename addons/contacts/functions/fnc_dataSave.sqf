@@ -67,18 +67,15 @@ _data set ["lastSeen", dayTime];
 
 // Collect marker deltas if markers addon is available
 private _markerDeltas = [];
-private _remoteMarkers = missionNamespace getVariable [QEGVAR(markers,remoteMarkers), createHashMap];
 private _allMarkers = missionNamespace getVariable [QEGVAR(markers,markers), createHashMap];
-if (count _remoteMarkers > 0) then {
+if (count _allMarkers > 0) then {
     private _contactNetId = parseNumber (((netId _object) splitString ":") select 0);
     {
         private _markerId = _x;
-        private _markerData = _remoteMarkers get _markerId;
+        private _markerState = _allMarkers get _markerId;
         
-        // Only include markers from this contact
-        if ((_markerData getOrDefault ["source_netId", -1]) == _contactNetId) then {
-            // Get the full delta if available
-            private _markerState = _allMarkers getOrDefault [_markerId, createHashMap];
+        // Only include markers originating from this contact
+        if ((_markerState getOrDefault ["source_netId", -1]) == _contactNetId) then {
             if (count _markerState > 0) then {
                 private _delta = createHashMap;
                 {
@@ -88,7 +85,7 @@ if (count _remoteMarkers > 0) then {
                 _markerDeltas pushBack _delta;
             };
         };
-    } forEach (keys _remoteMarkers);
+    } forEach (keys _allMarkers);
 };
 
 if (_markerDeltas isNotEqualTo []) then {
