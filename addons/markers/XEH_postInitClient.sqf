@@ -108,7 +108,10 @@ GVAR(markers) = createHashMap;  // marker id → {state, timestamp}
     } forEach GVAR(tracking);
     
     // Replicate marker data to player object so contacts can query it
-    player setVariable [QGVAR(markerData), GVAR(markers), true];
+    private _previousMarkerData = player getVariable [QGVAR(markerData), createHashMap];
+    if (_previousMarkerData isNotEqualTo GVAR(markers)) then {
+        player setVariable [QGVAR(markerData), GVAR(markers), true];
+    };
 }, 1, []] call CBA_fnc_addPerFrameHandler;
 
 // Initialize marker hover on map display
