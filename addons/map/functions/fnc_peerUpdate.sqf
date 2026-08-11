@@ -12,7 +12,7 @@ if (aid_debug) then {
 (_peerCtrl controlsGroupCtrl IDC_PEER_NAME)
     ctrlSetText _name;
 
-private _text = "";
+private _text = [];
 
 private _lastSeen = _peerData getOrDefault ["lastSeen", -1];
 if (_lastSeen != -1) then {
@@ -22,33 +22,33 @@ if (_lastSeen != -1) then {
     };
         private _since_minutes  = _since * 60;
     if (_since_minutes < 0.5) then {
-        _text = _text + "Active";
+        _text pushBack "Active";
     } else {
-        _text = _text + format ["Lost: %1 minutes ago", round (_since_minutes)];
+        _text pushBack format ["Lost: %1 minutes ago", round (_since_minutes)];
     };
 };
 
 if ("color" in _peerData) then {
     private _color = _peerData get "color";
-    _text = _text + format ["<br/>Team: <t color='%1'>%2</t>", [_color] call FUNC(colorHex), _color select [5]];
+    _text pushBack format ["<br/>Team: <t color='%1'>%2</t>", [_color] call FUNC(colorHex), _color select [5]];
 };
 
 if ("speed" in _peerData) then {
-    _text = _text + format ["<br/>Speed: %1 km/h", round ((_peerData get "speed") * 3.6)];
+    _text pushBack format ["<br/>Speed: %1 km/h", round ((_peerData get "speed") * 3.6)];
 };
 
 if ("bearing" in _peerData) then {
-    _text = _text + format ["<br/>Bearing: %1°", round (_peerData get "bearing")];
+    _text pushBack format ["<br/>Bearing: %1°", round (_peerData get "bearing")];
 };
 
 if ("posASL" in _peerData) then {
-    _text = _text + format ["<br/>Altitude: %1 m", round (((_peerData get "posASL") select 2) + GVAR(altitudeOffset))];
-    _text = _text + format ["<br/>Distance: %1", [(_peerData get "posASL") distance2D (getPosASL acre_player)] call FUNC(distanceString)];
+    _text pushBack format ["<br/>Altitude: %1 m", round (((_peerData get "posASL") select 2) + GVAR(altitudeOffset))];
+    _text pushBack format ["<br/>Distance: %1", [(_peerData get "posASL") distance2D (getPosASL acre_player)] call FUNC(distanceString)];
 };
 
 if ("radios" in _peerData) then {
     GVAR(lines) = [];
-    _text = _text + "<br/>";
+    _text pushBack "<br/>";
     {
         if (count (_y get "chain") < 2) then {
             continue;
@@ -66,7 +66,7 @@ if ("radios" in _peerData) then {
             [0,1,1],
             [1,1,1]
         ] select (_forEachIndex min 7);
-        _text = _text + format [
+        _text pushBack format [
             "<br/>via <t color='%1'>%2</t> %3<br/>  %4",
             _color call BIS_fnc_colorRGBtoHTML,
             _name,
@@ -84,7 +84,7 @@ if ("radios" in _peerData) then {
             };
             _x params ["_radio", "_signal"];
             if (_forEachIndex != (count _chain - 1)) then {
-                _text = _text + format [
+                _text pushBack format [
                     "<br/>  + %1%2",
                     ([_radio] call acre_sys_radio_fnc_getRadioObject) getVariable [QEGVAR(contacts,name), "Unknown"],
                     if aid_debug then { format [" (%1)", _radio] } else { "" }
@@ -108,7 +108,7 @@ if ("radios" in _peerData) then {
 };
 
 private _infoCtrl = (_peerCtrl controlsGroupCtrl IDC_PEER_INFO);
-_infoCtrl ctrlSetStructuredText parseText _text;
+_infoCtrl ctrlSetStructuredText parseText (_text joinString "");
 
 private _height = (ctrlTextHeight _infoCtrl);
 private _pos = if GVAR(followCursor) then {

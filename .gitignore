@@ -2,3 +2,5 @@
 releases/
 target/
 aid_x64.dll
+*.hemttprivatekey
+*.biprivatekey
