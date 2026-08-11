@@ -11,7 +11,12 @@ if (_code != 0) exitWith {
     };
     _data
 };
-private _radios = parseSimpleArray _ret;
+private _radios = try {
+    parseSimpleArray _ret;
+} catch {
+    ERROR_1("Failed to parse player:connections response: %1",_ret);
+    []
+};
 // Vec<(Radio, (Frequency, Radio, (Strength, Vec<(Radio, Strength, f32)>)))>
 
 private _radiosData = createHashMap;

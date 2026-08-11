@@ -53,7 +53,7 @@ while {true} do {
     if (_pos distance _end < 5) exitWith {};
     if (_lossDb >= 120) exitWith {};
 
-    _start = _pos;
+    _start = +_pos;
 };
 
 // Rain attenuation (frequency scaled, capped)
