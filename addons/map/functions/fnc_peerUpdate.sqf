@@ -53,7 +53,6 @@ if ("radios" in _peerData) then {
         if (count (_y get "chain") < 2) then {
             continue;
         };
-        private _radio_id = _x;
         private _name = if aid_debug then { _x } else { _y get "name" };
         private _channel = _y get "channelDescription";
         private _image = format ["<img size='0.7' image='%1'/>", [_y get "strength"] call FUNC(strengthIcon)];

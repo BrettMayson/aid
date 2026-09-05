@@ -46,7 +46,7 @@ while {diag_tickTime < _end} do {
 
     private _txBase = _txRadio select [6,3];
     private _rxBase = _rxRadio select [6,3];
-    if (_txBase == "f88" || { _txBase == "rc3" }) then {
+    if (_txBase == "f88" || _txBase == "rc3" ) then {
         if (_rxBase != _txBase) then {
             if (aid_trace) then {
                 systemChat format ["%1 (%2) != %3 (%4)", _txRadio, _txBase, _rxRadio, _rxBase];
@@ -54,7 +54,7 @@ while {diag_tickTime < _end} do {
             continue;
         };
     } else {
-        if (_rxBase == "f88" || { _rxBase == "rc3" }) then {
+        if (_rxBase == "f88" || _rxBase == "rc3" ) then {
             if (aid_trace) then {
                 systemChat format ["%1 (%2) != %3 (%4)", _txRadio, _txBase, _rxRadio, _rxBase];
             };
